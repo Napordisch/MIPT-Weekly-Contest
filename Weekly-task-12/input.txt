@@ -1,0 +1,11 @@
+10
+pop 3
+push 4
+push 6
+pop 4
+find 6
+push -10
+get_max
+find 7
+push 4
+find -5

@@ -1,0 +1,23 @@
+{
+    "C_Cpp.clang_format_style": "Google",
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    "editor.tabSize": 2,
+    "editor.fontSize": 14,
+    "files.associations": {
+        "cstddef": "cpp",
+        "cstdint": "cpp",
+        "vector": "cpp",
+        "iostream": "cpp",
+        "__bit_reference": "cpp",
+        "__node_handle": "cpp",
+        "atomic": "cpp",
+        "bitset": "cpp",
+        "__memory": "cpp",
+        "limits": "cpp",
+        "locale": "cpp",
+        "optional": "cpp",
+        "ratio": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp"
+    },
+}
