@@ -1,8 +1,0 @@
----
-triple:          'arm64-apple-darwin'
-binary-path:     '/Users/bogdan/My Drive (khamidullin.bogdan@gmail.com)/Uni/MIPT/Weekly contest/December-2023-contest/b'
-relocations:
-  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: __Z3fibiPi, symObjAddr: 0x0, symBinAddr: 0x100003E4C, symSize: 0xB0 }
-  - { offsetInCU: 0x720A, offset: 0x720A, size: 0x8, addend: 0x0, symName: __Z3fibiPi, symObjAddr: 0x0, symBinAddr: 0x100003E4C, symSize: 0xB0 }
-  - { offsetInCU: 0x7260, offset: 0x7260, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0xB0, symBinAddr: 0x100003EFC, symSize: 0x80 }
-...
