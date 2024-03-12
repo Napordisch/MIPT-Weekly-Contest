@@ -5,6 +5,9 @@
   "cmake.configureOnOpen": false,
   "files.associations": {
     "__node_handle": "cpp",
-    "cmath": "cpp"
+    "cmath": "cpp",
+    "vector": "cpp",
+    "list": "cpp",
+    "iostream": "cpp"
   },
 }
