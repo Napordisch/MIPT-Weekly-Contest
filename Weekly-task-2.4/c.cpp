@@ -1,12 +1,10 @@
 #include <cstdint>
 #include <iostream>
 #include <list>
-#include <vector>
 
 using std::cin;
 using std::cout;
 using std::list;
-using std::vector;
 
 class Graph {
  public:
@@ -109,6 +107,5 @@ int main() {
       }
     }
   }
-  city.DisplayEdges();
   city.ShowEulerPath();
 }
