@@ -3,135 +3,38 @@
 	{
 		"selected_items":
 		[
+			[
+				"top",
+				"top_sort_size"
+			],
+			[
+				"re",
+				"Reset"
+			],
+			[
+				"ve",
+				"vertexes_amount"
+			],
+			[
+				"pop",
+				"pop_front"
+			],
+			[
+				"arr",
+				"array_"
+			],
+			[
+				"ar",
+				"array_"
+			],
+			[
+				"in",
+				"index_"
+			]
 		]
 	},
 	"buffers":
 	[
-		{
-			"file": "Weekly-Contest.sublime-project",
-			"settings":
-			{
-				"buffer_size": 138,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			},
-			"undo_stack":
-			[
-				[
-					15,
-					1,
-					"insert",
-					{
-						"characters": "\n"
-					},
-					"AgAAACoAAAAAAAAAKwAAAAAAAAAAAAAAKwAAAAAAAAAsAAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAqAAAAAAAAACoAAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					21,
-					1,
-					"insert",
-					{
-						"characters": ","
-					},
-					"AgAAACoAAAAAAAAAKwAAAAAAAAAAAAAALAAAAAAAAAAsAAAAAAAAAAEAAAAJ",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAqAAAAAAAAACoAAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					22,
-					1,
-					"insert",
-					{
-						"characters": "\n"
-					},
-					"AgAAACsAAAAAAAAALAAAAAAAAAAAAAAALAAAAAAAAAAtAAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAArAAAAAAAAACsAAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					23,
-					1,
-					"paste",
-					null,
-					"AQAAAC0AAAAAAAAAWwAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAtAAAAAAAAAC0AAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					26,
-					1,
-					"insert",
-					{
-						"characters": "2"
-					},
-					"AgAAAFMAAAAAAAAAVAAAAAAAAAAAAAAAVAAAAAAAAABUAAAAAAAAAAEAAAA4",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAABUAAAAAAAAAFMAAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					29,
-					1,
-					"insert",
-					{
-						"characters": ","
-					},
-					"AQAAAFQAAAAAAAAAVQAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAABUAAAAAAAAAFQAAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					30,
-					1,
-					"insert",
-					{
-						"characters": "\n"
-					},
-					"AgAAAFUAAAAAAAAAVgAAAAAAAAAAAAAAVgAAAAAAAABeAAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAABVAAAAAAAAAFUAAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					31,
-					1,
-					"paste",
-					null,
-					"AQAAAF4AAAAAAAAAgAAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAABeAAAAAAAAAF4AAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					34,
-					1,
-					"insert",
-					{
-						"characters": "treu"
-					},
-					"BQAAAHoAAAAAAAAAewAAAAAAAAAAAAAAewAAAAAAAAB7AAAAAAAAAAUAAABmYWxzZXsAAAAAAAAAfAAAAAAAAAAAAAAAfAAAAAAAAAB9AAAAAAAAAAAAAAB9AAAAAAAAAH4AAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB/AAAAAAAAAHoAAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					35,
-					2,
-					"left_delete",
-					null,
-					"AgAAAH0AAAAAAAAAfQAAAAAAAAABAAAAdXwAAAAAAAAAfAAAAAAAAAABAAAAZQ",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB+AAAAAAAAAH4AAAAAAAAAAAAAAAAA8L8"
-				],
-				[
-					36,
-					1,
-					"insert",
-					{
-						"characters": "ue"
-					},
-					"AgAAAHwAAAAAAAAAfQAAAAAAAAAAAAAAfQAAAAAAAAB+AAAAAAAAAAAAAAA",
-					"AgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAB8AAAAAAAAAHwAAAAAAAAAAAAAAAAA8L8"
-				]
-			]
-		},
-		{
-			"file": "December-2023-contest/f.cpp",
-			"settings":
-			{
-				"buffer_size": 1517,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -144,6 +47,18 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"spl",
+				"File: Split View"
+			],
+			[
+				"spli",
+				"File: Split View"
+			],
+			[
+				"split",
+				"File: Split View"
+			],
 			[
 				"settings",
 				"Preferences: Settings"
@@ -199,12 +114,19 @@
 	},
 	"expanded_folders":
 	[
-		"/?wsl.localhost/Ubuntu/home/bebri/programming/MIPT-Weekly-Contest",
-		"/?wsl.localhost/Ubuntu/home/bebri/programming/MIPT-Weekly-Contest/Algorithms",
-		"/?wsl.localhost/Ubuntu/home/bebri/programming/MIPT-Weekly-Contest/December-2023-contest"
+		"/Users/bogdan/Uni/MIPT/Weekly-contest",
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/Weekly-task-2.3",
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/Weekly-task-2.4"
 	],
 	"file_history":
 	[
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/Weekly-task-2.4/input.txt",
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/Weekly-task-2.4/ArrayWithPushBack.cpp",
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/Weekly-task-2.3/b-array.cpp",
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/Weekly-task-2.4/a-2.cpp",
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/December-2023-contest/f.cpp",
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/Weekly-task-2.4/a.cpp",
+		"/Users/bogdan/Uni/MIPT/Weekly-contest/Weekly-Contest.sublime-project",
 		"/C/Users/Bogdan/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
 		"/C/Users/Bogdan/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/?wsl.localhost/Debian/home/bebri/Uni/MIPT/Weekly contest/Weekly-task-2.3/b.cpp",
@@ -213,11 +135,11 @@
 	],
 	"find":
 	{
-		"height": 39.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 128.0,
 		"where_history":
 		[
 		]
@@ -227,6 +149,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"cycle == true",
+			"DFS",
+			"uin32_t",
+			"loop.",
+			"edges",
+			"edges[*]\\.push",
+			"edges[*].push",
+			"edges[",
+			"edges.",
+			"main",
+			"loop.",
+			"loop",
+			"start",
+			"ArrayWithPushBack",
+			"uin32_t"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -234,6 +171,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"uint32_t",
+			"PushPopArray",
+			"uint32_t"
 		],
 		"reverse": false,
 		"scrollbar_highlights": true,
@@ -248,79 +188,16 @@
 		{
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "Weekly-Contest.sublime-project",
-					"selected": true,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 138,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								20,
-								20
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JSON/JSON.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"stack_multiselect": false,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "December-2023-contest/f.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1517,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								212,
-								212
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"stack_multiselect": false,
-					"type": "text"
-				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 27.0
+		"height": 34.0
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 48.0
 	},
 	"layout":
 	{
@@ -353,7 +230,7 @@
 	"project": "Weekly-Contest.sublime-project",
 	"replace":
 	{
-		"height": 50.0
+		"height": 64.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -391,7 +268,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 223.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
