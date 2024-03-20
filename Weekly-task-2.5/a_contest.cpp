@@ -20,15 +20,15 @@ class Node {
 class ListQueue {
  public:
   void Push(uint32_t value) {
-    PushFront(value);
+    PushBack(value);
   }
 
   uint32_t Pop() {
-    return PopBack();
+    return PopFront();
   }
 
   uint32_t Top() {
-    return Back();
+    return Front();
   }
 
   bool IsEmpty() {
