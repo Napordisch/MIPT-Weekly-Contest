@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <climits>
 #include <iostream>
 
@@ -6,20 +7,27 @@ using std::cout;
 using std::min;
 
 template <typename T>
-void DeleteTwoDimensionalArray(T array, size_t size) {
-  for (size_t i = 0; i < size; ++i) {
-    delete[] array[size];
+void DeleteTwoDimensionalArray(T array, int16_t size) {
+  for (int16_t i = 0; i < size; ++i) {
+    delete[] array[i];
   }
   delete[] array;
 }
 
 class Graph {
  public:
-  explicit Graph(int vertexes_amount) {
+  explicit Graph(int16_t vertexes_amount) {
     vertexes_amount_ = vertexes_amount;
-    graph_ = new int *[vertexes_amount_];
-    for (int i = 0; i < vertexes_amount_; ++i) {
-      graph_[i] = new int[vertexes_amount_];
+    graph_ = new int16_t *[vertexes_amount_];
+    for (int16_t i = 0; i < vertexes_amount_; ++i) {
+      graph_[i] = new int16_t[vertexes_amount_];
+      for (int16_t j = 0; j < vertexes_amount_; ++j) {
+        if (i == j) {
+          graph_[i][j] = 0;
+          continue;
+        }
+        graph_[i][j] = -1;
+      }
     }
   }
 
@@ -27,73 +35,87 @@ class Graph {
     DeleteTwoDimensionalArray(graph_, vertexes_amount_);
   }
 
-  void Fill(int i, int j, int value) { graph_[i][j] = value; }
+  void Fill(int16_t i, int16_t j, int16_t value) {
+    graph_[i][j] = value;
+  }
 
   void Display() {
-    for (int i = 0; i < vertexes_amount_; ++i) {
-      for (int j = 0; j < vertexes_amount_; ++j) {
+    for (int16_t i = 0; i < vertexes_amount_; ++i) {
+      for (int16_t j = 0; j < vertexes_amount_; ++j) {
         cout << graph_[i][j] << " ";
       }
       cout << "\n";
     }
   }
 
-  void Dijkstra(int start, int destination) {
-    auto *dist = new int[vertexes_amount_];
-    for (int i = 0; i < vertexes_amount_; ++i) {
-      dist[i] = INT_MAX;
-    }
+  void Dijkstra(int16_t start, int16_t destination) {
+    auto *dist = new int16_t[vertexes_amount_];
     auto *used = new bool[vertexes_amount_]{};
-    dist[start] = 0;
-    for (int i = 0; i < vertexes_amount_; ++i) {
-      int v = -1;
-      for (int u = 0; u < vertexes_amount_; ++u) {
-        if (used[u] == false && (v == -1 || dist[u] < dist[v])) {
-          v = u;
-        }
-      }
-      if (dist[v] == INT_MAX) {
-        break;
-      }
-      used[v] = true;
-      for (int child = 0; child < vertexes_amount_; ++child) {
-        if (graph_[v][child] <= 0) {
-          continue;
-        }
-        int to = graph_[v][child];
-        dist[to] = min(dist[to], dist[v] + graph_[v][to]);
-      }
-    }
-    cout << dist[destination] << "\n";
-    cout << "Distances:" << "\n";
-    for (int i = 0; i < vertexes_amount_; ++i) {
-      cout << dist[i] << " ";
+    for (int16_t i = 0; i < vertexes_amount_; ++i) {
+      used[i] = false;
+      dist[i] = SHRT_MAX;
     }
 
+    dist[start] = 0;
+    for (int16_t i = 0; i < vertexes_amount_; ++i) {
+      int16_t chosen_vertex = -1;
+      // looking for min vertex
+      for (int16_t j = 0; j < vertexes_amount_; ++j) {
+        if (!used[j] && (chosen_vertex == -1 || dist[j] < dist[chosen_vertex])) {
+          chosen_vertex = j;
+        }
+      }
+
+      if (dist[chosen_vertex] == SHRT_MAX) {
+        break;
+      }
+
+      used[chosen_vertex] = true;
+
+      // assigning new distances
+      for (int16_t child = 0; child < vertexes_amount_; ++child) {
+        if (graph_[chosen_vertex][child] == -1 || chosen_vertex == child) {
+          continue;
+        }
+        if (dist[chosen_vertex] + graph_[chosen_vertex][child] < dist[child]) {
+          dist[child] = static_cast<int16_t>(dist[chosen_vertex] + graph_[chosen_vertex][child]);
+        }
+      }
+    }
+
+    // result
+    int16_t wanted_dist = dist[destination];
+    if (wanted_dist != SHRT_MAX) {
+      cout << wanted_dist << "\n";
+    } else {
+      cout << "-1"
+           << "\n";
+    }
     delete[] dist;
     delete[] used;
   }
 
  private:
-  int **graph_ = nullptr;
-  int vertexes_amount_ = 0;
+  int16_t **graph_ = nullptr;
+  int16_t vertexes_amount_ = 0;
 };
 
 int main() {
-  int n = 0;
-  int s = 0;
-  int f = 0;
-  cin >> n >> s >> f;
+  int16_t n = 0;
+  int16_t m = 0;
+  int16_t s = 0;
+  int16_t f = 0;
+  cin >> n >> m;
+  cin >> s >> f;
   Graph g(n);
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < n; ++j) {
-      int value;
-      cin >> value;
-      g.Fill(i, j, value);
-    }
+  for (int16_t i = 0; i < m; ++i) {
+    int16_t a = 0;
+    int16_t b = 0;
+    int16_t t = 0;
+    cin >> a >> b >> t;
+    g.Fill(static_cast<int16>(a - 1), static_cast<int16_t>(b - 1), t);
   }
-  g.Display();
-  g.Dijkstra(s -1, f - 1);
+  g.Dijkstra(static_cast<int16_t>(s - 1), static_cast<int16_t>(f - 1));
 
   return 0;
 }

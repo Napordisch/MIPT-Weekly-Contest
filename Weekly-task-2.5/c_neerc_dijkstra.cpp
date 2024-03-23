@@ -51,9 +51,9 @@ class Graph {
     dist[start] = 0;
     for (int i = 0; i < vertexes_amount_; ++i) {
       int chosen_vertex = -1;
-      // looking for min vertex
+
       for (int j = 0; j < vertexes_amount_; ++j) {
-        if (!used[j] && (chosen_vertex == -1 || dist[j] < dist[chosen_vertex])) {
+        if (!used[j] && (chosen_vertex == -1 || dist[j] < dist[chosen_vertex])) { // looking for vertex with min dist
           chosen_vertex = j;
         }
       }
@@ -64,7 +64,7 @@ class Graph {
 
       used[chosen_vertex] = true;
 
-      // assigning new distances
+      // writing new distances
       for (int child = 0; child < vertexes_amount_; ++child) {
         if (graph_[chosen_vertex][child] == -1 || chosen_vertex == child) {
           continue;
