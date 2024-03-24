@@ -8,4 +8,8 @@
     "iostream": "cpp",
     "new": "cpp"
   },
+  "workbench.preferredLightColorTheme": "Visual Studio Light - C++",
+  "workbench.preferredHighContrastColorTheme": "Visual Studio Dark - C++",
+  "window.autoDetectColorScheme": true,
+  "workbench.colorTheme": "Visual Studio Light - C++",
 }
