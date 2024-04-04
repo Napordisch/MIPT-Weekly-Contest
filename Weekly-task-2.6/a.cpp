@@ -1,24 +1,24 @@
-#include <cstdint>
 #include <climits>
+#include <cstdint>
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 
 using std::cin;
 using std::cout;
 using std::min;
 
 struct Vertex {
-  Vertex(unsigned int dist, unsigned int i) {
+  Vertex(int dist, int i) {
     distance = dist;
     index = i;
   }
-  unsigned int distance = 0;
-  unsigned int index = 0;
-  bool operator< (const Vertex& other) {
+  int distance = 0;
+  int index = 0;
+  bool operator<(const Vertex& other) {
     return distance < other.distance;
   }
-  bool operator> (const Vertex& other) {
+  bool operator>(const Vertex& other) {
     return distance > other.distance;
   }
 };
@@ -35,7 +35,7 @@ class Graph {
  public:
   explicit Graph(int vertexes_amount) {
     vertexes_amount_ = vertexes_amount;
-    graph_ = new int *[vertexes_amount_];
+    graph_ = new int*[vertexes_amount_];
     for (int i = 0; i < vertexes_amount_; ++i) {
       graph_[i] = new int[vertexes_amount_];
     }
@@ -58,39 +58,42 @@ class Graph {
     }
   }
 
-  unsigned int Roche(int start, int destination) {
-    std::vector<unsigned int> distances(vertexes_amount_, UINT32_MAX);
+  int Roche(int start, int destination) {
+    std::vector<int> distances(vertexes_amount_, UINT32_MAX);
+    std::vector<bool> used(vertexes_amount_, false);
     distances[start] = 0;
     std::priority_queue<Vertex, std::vector<Vertex>, std::greater<void>> q;
-    q.push(Vertex(distances[start], start));
+    q.emplace(distances[start], start);
+
     while (!q.empty()) {
       Vertex top_vertex = q.top();
       q.pop();
+      used[top_vertex.index] = true;
+
       if (top_vertex.distance > distances[top_vertex.index]) {
         continue;
       }
 
-      for (unsigned int u = 0; u < vertexes_amount_; ++u) {
-        unsigned int current_edge = graph_[top_vertex.index][u] == -1;
-        if (u == top_vertex.index || current_edge == -1) {
+      for (int u = 0; u < vertexes_amount_; ++u) {
+        int current_edge = graph_[top_vertex.index][u];
+        if (u == top_vertex.index || current_edge == -1 || used[u]) {
+          // if (u == top_vertex.index || current_edge == -1) {
           continue;
         }
         if (distances[u] > distances[top_vertex.index] + current_edge) {
           distances[u] = distances[top_vertex.index] + current_edge;
-          q.push(Vertex(distances[u], u));
+          q.emplace(distances[u], u);
         }
       }
-
     }
 
-  return distances[destination];
+    return distances[destination];
   }
 
  private:
-  int **graph_ = nullptr;
+  int** graph_ = nullptr;
   int vertexes_amount_ = 0;
 };
-
 
 int main() {
   int n = 0;
@@ -105,7 +108,6 @@ int main() {
       g.Fill(i, j, value);
     }
   }
-  g.Display();
   std::cout << g.Roche(s - 1, f - 1) << '\n';
 
   return 0;
