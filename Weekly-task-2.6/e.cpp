@@ -54,6 +54,8 @@ void DFS(const vector<vector<Edge>> &graph_list, int start, vector<bool> &used, 
 }
 
 int main() {
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(nullptr);
   int n = 0;
   int m = 0;
   cin >> n >> m;
