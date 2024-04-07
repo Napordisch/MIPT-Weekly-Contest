@@ -1,7 +1,5 @@
-#include <algorithm>
 #include <iostream>
 #include <queue>
-#include <vector>
 
 using std::cin;
 using std::cout;
@@ -9,54 +7,47 @@ using std::min;
 using std::priority_queue;
 using std::vector;
 
-struct Edge {
-  Edge() = default;
-  Edge(int id, int t) {
-    index = id;
-    to = t;
+template <typename T>
+void Display2DVector(vector<vector<T>> the_vector) {
+  for (int i = 0; i < the_vector.size(); ++i) {
+    cout << "From" << i + 1 << ':' << ' ';
+    for (int vertex : the_vector[i]) {
+      cout << vertex + 1 << ' ';
+    }
+    cout << '\n';
   }
-  int index = 0;
-  int to = 0;
-};
-
-void DisplayVector(vector<int> the_vector) {
-  for (int i = 0; i < static_cast<int>(the_vector.size()); ++i) {
-    cout << the_vector[i] << ' ';
-  }
-  cout << '\n';
 }
 
-void DFS(const vector<vector<Edge>> &graph_list, int start, vector<bool> &used, vector<int> &depths,
-         vector<int> &cycle_depths, priority_queue<int, vector<int>, std::greater<int>> &points, int parent) {
+void DFS(const vector<vector<int>> &graph, const int &start, vector<bool> &used,
+         priority_queue<int, vector<int>, std::greater<int>> &points, vector<int> &depths, vector<int> &back_depths,
+         int parent = -1) {
   used[start] = true;
 
   if (parent == -1) {
-    cycle_depths[start] = 0;
-    depths[start] = cycle_depths[start];
+    back_depths[start] = 0;
   } else {
-    cycle_depths[start] = cycle_depths[parent] + 1;
-    depths[start] = cycle_depths[start];
+    back_depths[start] = back_depths[parent] + 1;
   }
-  const vector<Edge> &neighbours = graph_list[start];
-  int amount_of_neighbours = static_cast<int>(neighbours.size());
+  depths[start] = back_depths[start];
 
-  for (int i = 0; i < amount_of_neighbours; ++i) {
-    const Edge &u_edge = neighbours[i];
-    int u = u_edge.to;
-
+  int neighbours = 0;
+  for (int u : graph[start]) {
     if (u == parent) {
       continue;
     }
-
-    if (used[u]) {  // reverse edge
-      depths[start] = min(depths[start], cycle_depths[u]);
-    } else {  // straight edge
-      DFS(graph_list, u, used, depths, cycle_depths, points, start);
+    if (used[u]) {
+      depths[start] = min(depths[start], back_depths[u]);
+    } else {
+      DFS(graph, u, used, points, depths, back_depths, start);
       depths[start] = min(depths[start], depths[u]);
-      if (cycle_depths[start] <= depths[u]) {
+      if (back_depths[start] <= depths[u] && parent != -1) {
         points.push(start);
       }
+      neighbours++;
     }
+  }
+  if (parent == -1 && neighbours > 1) {
+    points.push(start);
   }
 }
 
@@ -64,26 +55,42 @@ int main() {
   int n = 0;
   int m = 0;
   cin >> n >> m;
-  vector<vector<Edge>> graph_list(n);
-  vector<bool> used(n, false);
+  vector<vector<int>> graph(n);
+  vector<bool> used(n);
   vector<int> depths(n);
-  vector<int> cycle_depths(n);
+  vector<int> back_depths(n);
+
   priority_queue<int, vector<int>, std::greater<int>> points;
+
   for (int i = 0; i < m; ++i) {
-    int from = 0;
-    int to = 0;
-    cin >> from >> to;
-    graph_list[from - 1].emplace_back(i + 1, to - 1);
-    graph_list[to - 1].emplace_back(i + 1, from - 1);
+    int a = 0;
+    int b = 0;
+    cin >> a >> b;
+    if (a == b) {
+      continue;
+    }
+    graph[a - 1].push_back(b - 1);
+    graph[b - 1].push_back(a - 1);
   }
   for (int i = 0; i < n; ++i) {
     if (!used[i]) {
-      DFS(graph_list, i, used, depths, cycle_depths, points, -1);
+      DFS(graph, i, used, points, depths, back_depths);
     }
   }
-  cout << points.size() << '\n';
+
+  std::queue<int> answer;
+  int last_elem = 0;
   while (!points.empty()) {
-    cout << points.top() << ' ';
+    if (points.top() + 1 != last_elem) {
+      answer.push(points.top() + 1);
+    }
+    last_elem = points.top() + 1;
     points.pop();
+  }
+
+  cout << answer.size() << '\n';
+  while (!answer.empty()) {
+    cout << answer.front() << '\n';
+    answer.pop();
   }
 }

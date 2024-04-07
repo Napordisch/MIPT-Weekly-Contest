@@ -79,9 +79,19 @@ int main() {
     }
   }
 
-  cout << points.size() << '\n';
+  std::queue<int> answer;
+  int last_elem = 0;
   while (!points.empty()) {
-    cout << points.top() + 1 << '\n';
+    if (points.top() + 1 != last_elem) {
+      answer.push(points.top() + 1);
+    }
+    last_elem = points.top() + 1;
     points.pop();
+  }
+
+  cout << answer.size() << '\n';
+  while (!answer.empty()) {
+    cout << answer.front() << '\n';
+    answer.pop();
   }
 }
