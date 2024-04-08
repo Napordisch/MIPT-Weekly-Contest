@@ -1,0 +1,4 @@
+Given shape contains point A
+Given shape does not cross segment AB
+4
+1 1 4 1 4 4 1 4
