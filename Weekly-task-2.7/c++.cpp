@@ -4,6 +4,15 @@
 #include <cstring>
 #include <vector>
 
+int ScalarProduct(Vector one, Vector two) {
+  return (one.GetX() * two.GetX()) + (one.GetY() * two.GetY());
+}
+
+double VectorLength(Vector one) {
+  double Length = std::sqrt(one.GetX() * one.GetX() + one.GetY() * one.GetY());
+}
+
+
 namespace geometry {
   class Vector;
 
@@ -17,7 +26,6 @@ namespace geometry {
 
 
   class Vector {
-    // implement
     public:
       Vector(const Point &A, const Point &B);
 
@@ -78,6 +86,10 @@ namespace geometry {
     public:
 
       Segment(Point a, Point b);
+
+      double GetGradient();
+      
+      double GetB(double gradient);
 
       Segment* Move(const Vector &ab) override;
       bool ContainsPoint(const Point &a) const override;
@@ -206,6 +218,26 @@ namespace geometry {
     b_ = *(b.Clone());
   }
 
+  double Segment::GetGradient() {
+    Point horizontal_line_point(b_.GetX(), a_.GetY());
+    Vector parallel_vector(a_, b_);
+    Vector horizontal_vector(a_, horizontal_line_point);
+    double scalar_product = ScalarProduct(parallel_vector, horizontal_vector);
+
+    double length_product = VectorLength(parallel_vector)
+                          * VectorLength(horizontal_vector);
+
+    double angle = std::acos((scalar_product) / (length_product));
+    double gradient = std::tan(angle);
+    return gradient;
+  }
+
+  double Segment::GetB(double gradient) {
+    double b = a_.GetY() - (gradient * a_.GetX());
+    return b;
+  }
+
+
   Segment* Segment::Move(const Vector&ab) {
     int dx = ab.GetX();
     int dy = ab.GetY();
@@ -219,17 +251,30 @@ namespace geometry {
     int y1 = a_.GetY();
     int y2 = b_.GetY();
 
+    int y_min = std::min(y1, y2);
+    int y_max = std::max(y1, y2);
+
     int x1 = a_.GetX();
     int x2 = b_.GetX();
+
+    int x_min = std::min(x1, x2);
+    int x_max = std::max(x1, x2);
 
     int x = a.GetX();
     int y = a.GetY();
 
-    return ((y - y1) / (y2 - y1) == (x - x1) / (x2 - x1));
+    bool on_the_line = (y - y1) / (y2 - y1) == (x - x1) / (x2 - x1);
+    bool in_the_rectangle = x < x_max &&
+                            x > x_min &&
+                            y < x_max &&
+                            y > x_min;
+
+    return (on_the_line && in_the_rectangle);
   }
 
   bool Segment::CrossSegment(const Segment &ab) const {
-    return false;
+    double this_gradient = GetGradient();
+    double b = GetB(this_gradient);
   }
 
   Segment* Segment::Clone() const {
