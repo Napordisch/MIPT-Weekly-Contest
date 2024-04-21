@@ -95,43 +95,22 @@ struct Graph {
 };
 
 int main() {
+  std::ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
   int n = 0;
   int m = 0;
-  Graph g;
-
-  {  // input
-    std::ifstream input_file;
-    input_file.open("input.txt");
-    std::string input;
-
-    using std::getline;
-    using std::stoi;
-
-    getline(input_file, input, ' ');
-    n = stoi(input);
-    getline(input_file, input, '\n');
-    m = stoi(input);
-
-    g = Graph(n, m);
-    for (int i = 0; i < m; ++i) {
-      int vertex_one = 0;
-      int vertex_two = 0;
-      int weight = 0;
-
-      getline(input_file, input, ' ');
-      vertex_one = stoi(input);
-
-      getline(input_file, input, ' ');
-      vertex_two = stoi(input);
-
-      getline(input_file, input, '\n');
-      weight = stoi(input);
-
-      Edge the_edge(vertex_one - 1, vertex_two - 1, weight);
-      g.edges[i] = the_edge;
-    }
-
-    input_file.close();
+  cin >> n >> m;
+  Graph g(n, m);
+  for (int i = 0; i < m; ++i) {
+    int v1 = 0;
+    int v2 = 0;
+    int weight = 0;
+    cin >> v1;
+    v1--;
+    cin >> v2;
+    v2--;
+    cin >> weight;
+    g.edges[i] = Edge(v1, v2, weight);
   }
 
   cout << g.Kruskal() << '\n';
