@@ -5,7 +5,6 @@
 using std::cin;
 using std::cout;
 
-using std::priority_queue;
 using std::vector;
 
 using std::pair;
@@ -38,22 +37,17 @@ class Graph {
       return false;
     }
     used_[start] = true;
-    vector<int> &neighbours = adjacency_list_[start];
-    for (unsigned int i = 0; i < neighbours.size(); ++i) {
-
-      if (used_[a_size_ + neighbours[i]]) {
+    for (int v : adjacency_list_[start]) {
+      if (used_[a_size_ + v]) {
         continue;
       }
-      used_[a_size_ + neighbours[i]] = true;
-
-      int to = neighbours[i];
-      if (matches_[to] == -1) {
-        matches_[to] = start;
+      used_[a_size_ + v] = true;
+      if (matches_[v] == -1) {
+        matches_[v] = start;
         return true;
       }
-
-      if (DFS(matches_[to])) {
-        matches_[to] = start;
+      if (DFS(matches_[v])) {
+        matches_[v] = start;
         return true;
       }
     }
@@ -61,11 +55,11 @@ class Graph {
   }
 
   int Kuhn() {
-    int matches_count = 0;
     matches_.resize(b_size_, -1);
-    for (int v = 0; v < static_cast<int>(a_size_); ++v) {
+    int matches_count = 0;
+    for (int i = 0; i < a_size_; ++i) {
       used_.resize(a_size_ + b_size_, false);
-      if (DFS(v)) {
+      if (DFS(i)) {
         ++matches_count;
       }
     }
@@ -73,10 +67,9 @@ class Graph {
   }
 
   void DisplayMatches() {
-
-    for (unsigned int i = 0; i < b_size_; ++i) {
-      if (matches_[i] != -1) {
-        cout << matches_[i] + 1 << ' ' << i + 1 << '\n';
+    for (int v = 0; v < b_size_; ++v) {
+      if (matches_[v] != -1) {
+        cout << v + 1 << ' ' << matches_[v] + 1 << '\n';
       }
     }
   }
