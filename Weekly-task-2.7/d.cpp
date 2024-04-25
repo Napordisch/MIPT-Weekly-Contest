@@ -85,7 +85,8 @@ struct Graph {
   int Kruskal() {
     for (unsigned int i = 0; i < edges.size(); ++i) {
       Edge the_edge = edges[i];
-      if (vertexes_DSU.Leader(the_edge.v1) != vertexes_DSU.Leader(the_edge.v2)) {
+      if (vertexes_DSU.Leader(the_edge.v1) !=
+          vertexes_DSU.Leader(the_edge.v2)) {
         vertexes_DSU.Unite(the_edge.v1, the_edge.v2);
         min_spanning_tree_weight += the_edge.weight;
       }
