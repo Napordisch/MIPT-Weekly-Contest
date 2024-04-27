@@ -12,13 +12,14 @@ class Graph { // 0-indexed inside of the class, 1-indexed outside of the class
     amount_of_vertexes_ = amount_of_vertexes;
     amount_of_edges_ = amount_of_edges;
     list_.resize(amount_of_vertexes_);
-    visited_.resize(amount_of_vertexes_, false);
+    visited_.resize(amount_of_vertexes_, vector<bool>(amount_of_vertexes_, false));
     source_ = source - 1;
     target_ = destination - 1;
   }
 
   void AddEdge(int from, int to) {
     list_[from - 1].push_back(to - 1);
+    list_[to - 1].push_back(from - 1);
   }
 
   void DisplayList() {
@@ -66,17 +67,17 @@ class Graph { // 0-indexed inside of the class, 1-indexed outside of the class
   vector<vector<int>> list_;
   int amount_of_vertexes_ = 0;
   int amount_of_edges_ = 0;
-  vector<bool> visited_;
+  vector<vector<bool>> visited_;
 
   bool DFS_(int start, int destination, vector<int> &parents) {
-    cout << start + 1 << ' ';
-    visited_[start] = true;
+    // cout << start + 1 << ' ';
     if (start == destination) {
       return true;
     }
     for (int neighbour : list_[start]) {
-      if (!visited_[neighbour]) {
+      if (!visited_[start][neighbour]) {
         if (DFS_(neighbour, destination, parents)) {
+          visited_[start][neighbour] = true;
           parents[neighbour] = start;
           return true;
         }
