@@ -1,0 +1,34 @@
+rm -rf ./Weekly-task-12/Icon
+rm -rf ./Weekly-task-13/Icon
+rm -rf ./Weekly-task-13/.idea/Icon
+rm -rf ./Weekly-task-13/.idea/codeStyles/Icon
+rm -rf ./Weekly-task-14/Icon
+rm -rf ./December-2023-contest/Icon
+rm -rf ./December-2023-contest/.vscode/Icon
+rm -rf ./Algorithms/Icon
+rm -rf ./Weekly-task-5/Tasks/Icon
+rm -rf ./Weekly-task-5/Icon
+rm -rf ./Weekly-task-2/Icon
+rm -rf ./Weekly-task-3/Icon
+rm -rf ./Weekly-task-4/Tasks/Icon
+rm -rf ./Weekly-task-4/Icon
+rm -rf ./Weekly-task-11/a-cstring/Icon
+rm -rf ./Weekly-task-11/Icon
+rm -rf ./Weekly-task-11/treap.dSYM/Contents/Icon
+rm -rf ./Weekly-task-11/treap.dSYM/Contents/Resources/Relocations/Icon
+rm -rf ./Weekly-task-11/treap.dSYM/Contents/Resources/Relocations/aarch64/Icon
+rm -rf ./Weekly-task-11/treap.dSYM/Contents/Resources/Icon
+rm -rf ./Weekly-task-11/treap.dSYM/Contents/Resources/DWARF/Icon
+rm -rf ./Weekly-task-11/treap.dSYM/Icon
+rm -rf ./Weekly-task-10/Icon
+rm -rf ./Lectures/Icon
+rm -rf ./.vscode/Icon
+rm -rf ./Weekly-task-1/Icon
+rm -rf ./Weekly-task-1/With codestyle/Icon
+rm -rf ./Weekly-task-6/Tasks/Icon
+rm -rf ./Weekly-task-6/Icon
+rm -rf ./Weekly-task-8/Icon
+rm -rf ./Weekly-task-9/Icon
+rm -rf ./Weekly-task-9/sem code  9/Icon
+rm -rf ./Weekly-task-7/Tasks/Icon
+rm -rf ./Weekly-task-7/Icon
