@@ -5,7 +5,7 @@ using std::cin;
 using std::cout;
 using std::vector;
 
-struct Point {
+struct Point { // a.k.a. Vector
   Point() = default;
   Point(int new_x, int new_y) {
     x = new_x;
@@ -31,7 +31,7 @@ struct Ray {
   }
   Point end;
   Point start;
-  Point Direction() {
+  Point Direction() { // vector
     return Point(end.x - start.x, end.y - start.y);
   }
 };
@@ -46,6 +46,7 @@ Point SegmentToVector(Segment s) {
 }
 
 int operator^(Point a, Point b);
+int operator*(Point a, Point b);
 
 bool RaySegmentIntersection(Ray the_ray, Segment the_segment) {
   Segment aux_segment(the_segment.a_point, the_ray.start); // connects a_point of segment to the start of the ray
@@ -59,6 +60,17 @@ bool RaySegmentIntersection(Ray the_ray, Segment the_segment) {
 
 int operator^(Point a, Point b) {
   return a.x * b.y - a.y * b.x;
+}
+
+int operator*(Point a, Point b) {
+  return (a.x * b.x) + (a.y * b.y);
+}
+
+bool PointOnRay(Point p, Ray r) {
+  Ray aux_ray(r.start, p);
+  bool on_line = ((r.Direction()^aux_ray.Direction()) == 0);
+  bool sharp_angle = ((r.Direction()*aux_ray.Direction()) >= 0);
+  return on_line && sharp_angle;
 }
 
 void Solve() {
@@ -76,14 +88,11 @@ void Solve() {
   }
 }
 
-
 int main() {
-  Point ray_start(0, 3);
-  Point ray_direction(3, 3);
+  Point ray_start(3, 8);
+  Point ray_direction(10, 8);
   Ray r(ray_start, ray_direction);
-  Point seg_start(3, 5);
-  Point seg_end(4, 0);
-  Segment s(seg_start, seg_end);
-  cout << RaySegmentIntersection(r, s) << '\n';
+  Point p(4, 8);
+  cout << PointOnRay(p, r) << '\n';
   return 0;
 }
