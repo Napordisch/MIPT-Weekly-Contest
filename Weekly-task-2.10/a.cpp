@@ -49,9 +49,7 @@ struct Ray {
 };
 
 struct Polygon {
-  Polygon() {
-    points_connected = false;
-  }
+  Polygon() { points_connected = false; }
   void ConnectPoints() {
     if (!segments.empty()) {
       segments.clear();
@@ -154,6 +152,34 @@ bool RayBetweenPointSegments(const Ray &r, const Point &p,
          (left_angle < 0 && right_angle > 0);
 }
 
+bool ParellelSegmentIsABorder(const Ray &r, const vector<Segment> &segs,
+                              int segment_index) {
+  Point along_the_ray = r.Direction();
+  const Segment &current_segment = segs[segment_index];
+  if ((!PointOnRay(current_segment.a_point, r)) ||
+      (!PointOnRay(current_segment.b_point, r))) {
+    return false;
+  }
+  int left_segment_index = segment_index - 1;
+  int right_segment_index = segment_index + 1;
+  if (left_segment_index < 0) {
+    left_segment_index = segs.size() - 1;
+  }
+  if (right_segment_index >= segs.size()) {
+    right_segment_index = 0;
+  }
+  Segment left_segment = segs[left_segment_index];
+  left_segment.Reverse();
+  Segment right_segment = segs[right_segment_index];
+  Point left_vector = SegmentToVector(left_segment);
+  Point right_vector = SegmentToVector(right_segment);
+  int left_angle = (along_the_ray ^ left_vector);
+  int right_angle = (along_the_ray ^ right_vector);
+
+  return (right_angle > 0 && left_angle < 0) ||
+         (right_angle < 0 && left_angle > 0);
+}
+
 bool PointInsidePolygon(const Point &p, Polygon &s) {
   if (!s.points_connected) {
     s.ConnectPoints();
@@ -169,7 +195,8 @@ bool PointInsidePolygon(const Point &p, Polygon &s) {
       return true;
     }
     if (RaySegmentIntersection(horizontal_from_point,
-                               current_polygon_segment)) {
+                               current_polygon_segment) ||
+        ParellelSegmentIsABorder(horizontal_from_point, s.segments, i)) {
       ++amount_of_intersections;
     }
   }
@@ -180,7 +207,8 @@ bool PointInsidePolygon(const Point &p, Polygon &s) {
     if (p == current_polygon_point) {
       return true;
     }
-    bool point_on_ray = PointOnRay(current_polygon_point, horizontal_from_point);
+    bool point_on_ray =
+        PointOnRay(current_polygon_point, horizontal_from_point);
 
     if (point_on_ray) {
       const Segment &right_segment = s.segments[i];
@@ -285,18 +313,18 @@ void Test3() {
   Point p11(11, 6);
   Point p12(11, 4);
   Point p13(6, 8);
-  cout << PointInsidePolygon(p1, shape) << '\n'; 
-  cout << PointInsidePolygon(p2, shape) << '\n'; 
-  cout << PointInsidePolygon(p3, shape) << '\n'; 
-  cout << PointInsidePolygon(p4, shape) << '\n'; 
-  cout << PointInsidePolygon(p5, shape) << '\n'; 
-  cout << PointInsidePolygon(p6, shape) << '\n'; 
-  cout << PointInsidePolygon(p7, shape) << '\n'; 
-  cout << PointInsidePolygon(p8, shape) << '\n'; 
-  cout << PointInsidePolygon(p9, shape) << '\n'; 
-  cout << PointInsidePolygon(p10, shape) << '\n'; 
-  cout << PointInsidePolygon(p11, shape) << '\n'; 
-  cout << PointInsidePolygon(p13, shape) << '\n'; 
+  cout << PointInsidePolygon(p1, shape) << '\n';
+  cout << PointInsidePolygon(p2, shape) << '\n';
+  cout << PointInsidePolygon(p3, shape) << '\n';
+  cout << PointInsidePolygon(p4, shape) << '\n';
+  cout << PointInsidePolygon(p5, shape) << '\n';
+  cout << PointInsidePolygon(p6, shape) << '\n';
+  cout << PointInsidePolygon(p7, shape) << '\n';
+  cout << PointInsidePolygon(p8, shape) << '\n';
+  cout << PointInsidePolygon(p9, shape) << '\n';
+  cout << PointInsidePolygon(p10, shape) << '\n';
+  cout << PointInsidePolygon(p11, shape) << '\n';
+  cout << PointInsidePolygon(p13, shape) << '\n';
 }
 
 void Test4() {
@@ -325,18 +353,18 @@ void Test4() {
   Point p11(11, -6);
   Point p12(11, -4);
   Point p13(6, -8);
-  cout << PointInsidePolygon(p1, shape) << '\n'; 
-  cout << PointInsidePolygon(p2, shape) << '\n'; 
-  cout << PointInsidePolygon(p3, shape) << '\n'; 
-  cout << PointInsidePolygon(p4, shape) << '\n'; 
-  cout << PointInsidePolygon(p5, shape) << '\n'; 
-  cout << PointInsidePolygon(p6, shape) << '\n'; 
-  cout << PointInsidePolygon(p7, shape) << '\n'; 
-  cout << PointInsidePolygon(p8, shape) << '\n'; 
-  cout << PointInsidePolygon(p9, shape) << '\n'; 
-  cout << PointInsidePolygon(p10, shape) << '\n'; 
-  cout << PointInsidePolygon(p11, shape) << '\n'; 
-  cout << PointInsidePolygon(p13, shape) << '\n'; 
+  cout << PointInsidePolygon(p1, shape) << '\n';
+  cout << PointInsidePolygon(p2, shape) << '\n';
+  cout << PointInsidePolygon(p3, shape) << '\n';
+  cout << PointInsidePolygon(p4, shape) << '\n';
+  cout << PointInsidePolygon(p5, shape) << '\n';
+  cout << PointInsidePolygon(p6, shape) << '\n';
+  cout << PointInsidePolygon(p7, shape) << '\n';
+  cout << PointInsidePolygon(p8, shape) << '\n';
+  cout << PointInsidePolygon(p9, shape) << '\n';
+  cout << PointInsidePolygon(p10, shape) << '\n';
+  cout << PointInsidePolygon(p11, shape) << '\n';
+  cout << PointInsidePolygon(p13, shape) << '\n';
 }
 
 void Test5() {
@@ -353,55 +381,55 @@ void Test5() {
   cout << PointInsidePolygon(p1, shape) << '\n';
 }
 
-void Test6() { // buttefly triangles
+void Test6() {  // buttefly triangles
   Polygon shape;
-  shape.points.emplace_back(0,0);
-  shape.points.emplace_back(0,6);
-  shape.points.emplace_back(0,6);
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(7,6);
-  shape.points.emplace_back(7,0);
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(3,3);
-  Point p1(1,3);
-  Point p2(3,3);
-  Point p3(5,3);
-  Point p4(-1,3);
-  Point p5(8,3);
+  shape.points.emplace_back(0, 0);
+  shape.points.emplace_back(0, 6);
+  shape.points.emplace_back(0, 6);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(7, 6);
+  shape.points.emplace_back(7, 0);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(3, 3);
+  Point p1(1, 3);
+  Point p2(3, 3);
+  Point p3(5, 3);
+  Point p4(-1, 3);
+  Point p5(8, 3);
   Point p6(8, 5);
   cout << PointInsidePolygon(p1, shape) << '\n';
-  cout << PointInsidePolygon(p2 , shape) << '\n';
+  cout << PointInsidePolygon(p2, shape) << '\n';
   cout << PointInsidePolygon(p3, shape) << '\n';
   cout << PointInsidePolygon(p4, shape) << '\n';
   cout << PointInsidePolygon(p5, shape) << '\n';
   cout << PointInsidePolygon(p6, shape) << '\n';
 }
 
-void Test7() { // reversed buttefly triangles
+void Test7() {  // reversed buttefly triangles
   Polygon shape;
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(7,0);
-  shape.points.emplace_back(7,6);
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(3,3);
-  shape.points.emplace_back(0,6);
-  shape.points.emplace_back(0,6);
-  shape.points.emplace_back(0,0);
-  Point p1(1,3);
-  Point p2(3,3);
-  Point p3(5,3);
-  Point p4(-1,3);
-  Point p5(8,3);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(7, 0);
+  shape.points.emplace_back(7, 6);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(3, 3);
+  shape.points.emplace_back(0, 6);
+  shape.points.emplace_back(0, 6);
+  shape.points.emplace_back(0, 0);
+  Point p1(1, 3);
+  Point p2(3, 3);
+  Point p3(5, 3);
+  Point p4(-1, 3);
+  Point p5(8, 3);
   Point p6(8, 5);
   Point p7(0, 6);
   Point p8(0, 0);
   Point p9(3, 0);
   cout << PointInsidePolygon(p1, shape) << '\n';
-  cout << PointInsidePolygon(p2 , shape) << '\n';
+  cout << PointInsidePolygon(p2, shape) << '\n';
   cout << PointInsidePolygon(p3, shape) << '\n';
   cout << PointInsidePolygon(p4, shape) << '\n';
   cout << PointInsidePolygon(p5, shape) << '\n';
@@ -409,6 +437,28 @@ void Test7() { // reversed buttefly triangles
   cout << PointInsidePolygon(p7, shape) << '\n';
   cout << PointInsidePolygon(p8, shape) << '\n';
   cout << PointInsidePolygon(p9, shape) << '\n';
+}
+
+void Test8() {  // Ildar's shape
+  Polygon shape;
+  shape.points.emplace_back(3, 1);
+  shape.points.emplace_back(6, 3);
+  shape.points.emplace_back(3, 6);
+  shape.points.emplace_back(5, 8);
+  shape.points.emplace_back(8, 4);
+  shape.points.emplace_back(12, 8);
+  shape.points.emplace_back(8, 8);
+  shape.points.emplace_back(12, 11);
+  shape.points.emplace_back(8, 12);
+  shape.points.emplace_back(9, 10);
+  shape.points.emplace_back(1, 10);
+  shape.points.emplace_back(1, 10);
+  shape.points.emplace_back(-2, 5);
+  shape.points.emplace_back(2, 5);
+  Point p1(7, 9);
+  Point p2(-1, 8);
+  // cout << PointInsidePolygon(p1, shape) << '\n';
+  cout << PointInsidePolygon(p2, shape) << '\n';
 }
 
 void AdditionalTests() {
@@ -422,10 +472,10 @@ void AdditionalTests() {
   Point p2(4, 2);
   Point p3(0, 2);
   Point p4(2, 4);
-  cout << PointInsidePolygon(p1, shape1) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p2, shape1) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p3, shape1) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p4, shape1) << '\n'; // Should output 1 (true)
+  cout << PointInsidePolygon(p1, shape1) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p2, shape1) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p3, shape1) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p4, shape1) << '\n';  // Should output 1 (true)
   cout << '\n';
 
   // Test 6: Point outside polygon
@@ -436,8 +486,8 @@ void AdditionalTests() {
   shape2.points.emplace_back(0, 4);
   Point p5(5, 5);
   Point p6(-1, -1);
-  cout << PointInsidePolygon(p5, shape2) << '\n'; // Should output 0 (false)
-  cout << PointInsidePolygon(p6, shape2) << '\n'; // Should output 0 (false)
+  cout << PointInsidePolygon(p5, shape2) << '\n';  // Should output 0 (false)
+  cout << PointInsidePolygon(p6, shape2) << '\n';  // Should output 0 (false)
   cout << '\n';
 
   // Test 7: Point on polygon vertex
@@ -450,10 +500,10 @@ void AdditionalTests() {
   Point p8(4, 0);
   Point p9(4, 4);
   Point p10(0, 4);
-  cout << PointInsidePolygon(p7, shape3) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p8, shape3) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p9, shape3) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p10, shape3) << '\n'; // Should output 1 (true)
+  cout << PointInsidePolygon(p7, shape3) << '\n';   // Should output 1 (true)
+  cout << PointInsidePolygon(p8, shape3) << '\n';   // Should output 1 (true)
+  cout << PointInsidePolygon(p9, shape3) << '\n';   // Should output 1 (true)
+  cout << PointInsidePolygon(p10, shape3) << '\n';  // Should output 1 (true)
   cout << '\n';
 
   // Test 8: Concave polygon
@@ -466,9 +516,9 @@ void AdditionalTests() {
   Point p11(2, 2);
   Point p12(1, 1);
   Point p13(3, 3);
-  cout << PointInsidePolygon(p11, shape4) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p12, shape4) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p13, shape4) << '\n'; // Should output 1 (true)
+  cout << PointInsidePolygon(p11, shape4) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p12, shape4) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p13, shape4) << '\n';  // Should output 1 (true)
   cout << '\n';
 }
 
@@ -490,11 +540,11 @@ void ComplicatedTests() {
   Point p16(2, 1);
   Point p17(0, 4);
   Point p18(5, 5);
-  cout << PointInsidePolygon(p14, shape5) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p15, shape5) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p16, shape5) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p17, shape5) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p18, shape5) << '\n'; // Should output 0 (false)
+  cout << PointInsidePolygon(p14, shape5) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p15, shape5) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p16, shape5) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p17, shape5) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p18, shape5) << '\n';  // Should output 0 (false)
   cout << '\n';
 
   // Test 10: Polygon with collinear points
@@ -510,10 +560,10 @@ void ComplicatedTests() {
   Point p20(7, 7);
   Point p21(0, 0);
   Point p22(6, 6);
-  cout << PointInsidePolygon(p19, shape6) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p20, shape6) << '\n'; // Should output 0 (false)
-  cout << PointInsidePolygon(p21, shape6) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p22, shape6) << '\n'; // Should output 1 (true)
+  cout << PointInsidePolygon(p19, shape6) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p20, shape6) << '\n';  // Should output 0 (false)
+  cout << PointInsidePolygon(p21, shape6) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p22, shape6) << '\n';  // Should output 1 (true)
   cout << '\n';
 }
 
@@ -535,15 +585,15 @@ void MoreComplicatedTests() {
   Point p27(0, 4);
   Point p28(8, 0);
   Point p29(4, 4);
-  cout << PointInsidePolygon(p23, shape7) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p24, shape7) << '\n'; // Should output 0 (false)
-  cout << PointInsidePolygon(p25, shape7) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p26, shape7) << '\n'; // Should output 0 (false)
-  cout << PointInsidePolygon(p27, shape7) << '\n'; // Should output 1 (true)
-  cout << PointInsidePolygon(p28, shape7) << '\n'; // Should output 0 (false)
-  cout << PointInsidePolygon(p29, shape7) << '\n'; // Should output 1 (true)
+  cout << PointInsidePolygon(p23, shape7) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p24, shape7) << '\n';  // Should output 0 (false)
+  cout << PointInsidePolygon(p25, shape7) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p26, shape7) << '\n';  // Should output 0 (false)
+  cout << PointInsidePolygon(p27, shape7) << '\n';  // Should output 1 (true)
+  cout << PointInsidePolygon(p28, shape7) << '\n';  // Should output 0 (false)
+  cout << PointInsidePolygon(p29, shape7) << '\n';  // Should output 1 (true)
 }
 
 int main() {
-  Test7();
+  Solve();
 }
