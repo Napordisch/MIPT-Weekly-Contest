@@ -1,4 +1,5 @@
 #include <math.h>
+#include <iomanip>
 #include <iostream>
 
 template <typename T>
@@ -34,11 +35,11 @@ struct Vector {  // a.k.a. point
 
   long double LengthSquared() const { return (x * x) + (y * y); }
 
-  int operator^(const Vector &other) const {
+  long double operator^(const Vector &other) const {
     return (x * other.y) - (y * other.x);
   }
 
-  int operator*(const Vector &other) const {
+  long double operator*(const Vector &other) const {
     return (x * other.x) + (y * other.y);
   }
 };
@@ -56,16 +57,29 @@ void Solve() {
     cin >> start_x >> start_y;
     int end_x = 0;
     int end_y = 0;
+
     cin >> end_x >> end_y;
     vectors[i].x = end_x - start_x;
     vectors[i].y = end_y - start_y;
   }
+
   using std::cout;
-  cout << vectors[0].Length() << ' ' << vectors[1].Length() << '\n';
+  cout << std::setprecision(7) << vectors[0].Length() << ' ' << vectors[1].Length() << '\n';
   Vector sum = vectors[0] + vectors[1];
   cout << sum.x << ' ' << sum.y << '\n';
   cout << (vectors[0] * vectors[1]) << ' ' << (vectors[0] ^ vectors[1]) << '\n';
   cout << VectorBasedTriangleArea(vectors[0], vectors[1]) << '\n';
+}
+
+void Test1() {
+  using std::cout;
+  Vector first(5, 5);
+  Vector second(-5, -5);
+  cout << first.Length() << ' ' << second.Length() << '\n';
+  Vector sum = first + second;
+  cout << sum.x << ' ' << sum.y << '\n';
+  cout << (first * second) << ' ' << (first ^ second) << '\n';
+  cout << VectorBasedTriangleArea(first, second) << '\n';
 }
 
 int main() { 
