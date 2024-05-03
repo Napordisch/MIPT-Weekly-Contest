@@ -68,12 +68,15 @@ bool RaySegmentIntersection(const Ray &the_ray, const Segment &the_segment) {
                          the_ray.start.y - the_segment.a.y);
   Point along_the_segment(the_segment.b.x - the_segment.a.x,
                           the_segment.b.y - the_segment.a.y);
-  Point along_the_ray(the_ray.Direction());
+  Point along_the_ray = the_ray.Direction();
 
   int first = (s_a_to_ray_start ^ along_the_segment);
   int second = (the_ray.Direction() ^ along_the_segment);
+
   bool different_cross_product_signs_by_formula =
-      (first < 0 && second > 0) || (first > 0 && second < 0);
+      (first < 0 && second > 0) || (first == 0 && second > 0) ||
+      (first < 0 && second == 0) || (first > 0 && second < 0) ||
+      (first == 0 && second < 0) || (first > 0 && second == 0);
 
   Point ray_start_to_a(the_segment.a.x - the_ray.start.x,
                        the_segment.a.y - the_ray.start.y);
@@ -145,7 +148,8 @@ void Solve() {
     Point b(x, y);
     segments[i] = Segment(a, b);
   }
-  if (SegmentsIntersection(segments[1], segments[0]) && SegmentsIntersection(segments[0], segments[1])) {
+  if (SegmentsIntersection(segments[1], segments[0]) &&
+      SegmentsIntersection(segments[0], segments[1])) {
     cout << "YES" << '\n';
   } else {
     cout << "NO" << '\n';
@@ -164,6 +168,12 @@ void Test2() {
   cout << SegmentsIntersection(first, second) << '\n';
 }
 
-int main() { 
+void Test3() {
+  Segment first(Point(-3, 10), Point(7, 10));
+  Segment second(Point(2, 10), Point(9, 8));
+  cout << SegmentsIntersection(first, second) << '\n';
+}
+
+int main() {
   Solve();
 }
