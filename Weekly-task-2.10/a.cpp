@@ -13,6 +13,11 @@ struct Point {  // a.k.a. Vector
   }
   int x = 0;
   int y = 0;
+  bool operator==(const Point &another_point) const {
+    bool x_equality = (x == another_point.x);
+    bool y_equality = (y == another_point.y);
+    return x_equality && y_equality;
+  }
 };
 
 struct Segment {
@@ -23,6 +28,12 @@ struct Segment {
   }
   Point a_point;
   Point b_point;
+
+  void Reverse() {
+    Point temp = a_point;
+    a_point = b_point;
+    b_point = temp;
+  }
 };
 
 struct Ray {
@@ -38,6 +49,9 @@ struct Ray {
 };
 
 struct Polygon {
+  Polygon() { 
+    points_connected = false;
+  }
   void ConnectPoints() {
     if (!segments.empty()) {
       segments.clear();
@@ -150,6 +164,9 @@ bool PointInsidePolygon(const Point &p, Polygon &s) {
   // points
   for (size_t i = 0; i < s.points.size(); ++i) {
     const Point &polygon_point = s.points[i];
+    if (p == polygon_point) {
+      return true;
+    }
     bool point_on_ray = PointOnRay(polygon_point, horizontal_from_point);
     if (point_on_ray) {
       const Segment &right_segment = s.segments[i];
@@ -157,7 +174,8 @@ bool PointInsidePolygon(const Point &p, Polygon &s) {
       if (i - 1 < 0) {
         left_segment_index = static_cast<int>(s.segments.size());
       }
-      const Segment &left_segment = s.segments[left_segment_index];
+      Segment left_segment = s.segments[left_segment_index];
+      left_segment.Reverse();
       if (RayBetweenPointSegments(horizontal_from_point, polygon_point,
                                   left_segment, right_segment, point_on_ray)) {
         ++amount_of_intersections;
@@ -190,24 +208,16 @@ void Solve() {
 }
 
 void Test() {
-  Point ray_start(3, 0);
-  Point ray_end(3, 2);
-  Ray r(ray_start, ray_end);
-
-  Point a(0, 0);
-  Point b(3, 5);  // top
-  Point c(0, 6);
-  Segment ab(a, b);
-  Segment bc(b, c);
-
-  Point d(0, 5);
-  Point e(1, 5);
-  Ray rde(d, e);
-
-  cout << "Vertical: " << RayBetweenPointSegments(r, b, ab, bc) << '\n';
-  cout << "Horizontal: " << RayBetweenPointSegments(rde, b, ab, bc) << '\n';
+  Polygon shape;
+  shape.points.emplace_back(7, 3);
+  shape.points.emplace_back(7, 10);
+  shape.points.emplace_back(3, 8);
+  shape.points.emplace_back(0, 10);
+  shape.points.emplace_back(0, 3);
+  Point p(0, 10);
+  cout << PointInsidePolygon(p, shape) << '\n';
 }
 
 int main() {
-  Solve();
+  Test();
 }
