@@ -1,4 +1,13 @@
+#include <math.h>
 #include <iostream>
+
+template <typename T>
+T absolufy(T number) {
+  if (number < 0) {
+    number *= (-1);
+  }
+  return number;
+}
 
 struct Vector {  // a.k.a. point
   Vector() = default;
@@ -17,29 +26,28 @@ struct Vector {  // a.k.a. point
     return x_equality && y_equality;
   }
 
-  Vector operator+(const Vector &other) {
+  Vector operator+(const Vector &other) const {
     return Vector(x + other.x, y + other.y);
   }
 
-  long double Length() {
-    return sqrtl((x * x) + (y * y));
-  }
+  long double Length() const { return sqrtl((x * x) + (y * y)); }
 
-  long double LengthSquared() {
-    return (x * x) + (y * y);
-  }
+  long double LengthSquared() const { return (x * x) + (y * y); }
 
-  int operator^(const Vector &other) {
+  int operator^(const Vector &other) const {
     return (x * other.y) - (y * other.x);
   }
 
-  int operator*(const Vector &other) {
+  int operator*(const Vector &other) const {
     return (x * other.x) + (y * other.y);
   }
 };
 
+long double VectorBasedTriangleArea(const Vector &first, const Vector &second) {
+  return absolufy(static_cast<long double>(first ^ second)) / 2;
+}
+
 void Solve() {
-  using std::cout;
   Vector vectors[2];
   for (int i = 0; i < 2; ++i) {
     using std::cin;
@@ -57,6 +65,9 @@ void Solve() {
   Vector sum = vectors[0] + vectors[1];
   cout << sum.x << ' ' << sum.y << '\n';
   cout << (vectors[0] * vectors[1]) << ' ' << (vectors[0] ^ vectors[1]) << '\n';
+  cout << VectorBasedTriangleArea(vectors[0], vectors[1]) << '\n';
 }
 
-int main() { Solve(); }
+int main() { 
+  Solve();
+}
