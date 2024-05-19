@@ -83,5 +83,5 @@ void Test1() {
 }
 
 int main() { 
-  Solve();
+  Test1();
 }

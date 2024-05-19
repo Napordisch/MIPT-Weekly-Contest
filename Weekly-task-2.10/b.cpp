@@ -156,24 +156,6 @@ void Solve() {
   }
 }
 
-void Test1() {
-  Segment first(Point(0, 11), Point(5, 11));
-  Segment second(Point(4, 4), Point(4, 11));
-  cout << SegmentsIntersection(first, second) << '\n';
-}
-
-void Test2() {
-  Segment first(Point(-3, 2), Point(3, 2));
-  Segment second(Point(3, 2), Point(11, 2));
-  cout << SegmentsIntersection(first, second) << '\n';
-}
-
-void Test3() {
-  Segment first(Point(-3, 10), Point(7, 10));
-  Segment second(Point(2, 10), Point(9, 8));
-  cout << SegmentsIntersection(first, second) << '\n';
-}
-
 int main() {
   Solve();
 }
