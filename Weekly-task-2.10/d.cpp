@@ -11,6 +11,15 @@ struct Point {
   int y = 0;
 };
 
+template <typename T>
+T Absolufy(const T &value) {
+  if (value < 0) {
+    return -value;
+  }
+  return value;
+}
+
+
 int operator^(const Point &one, const Point &two) {
   return one.x * two.y - one.y * two.x;
 }
@@ -37,6 +46,7 @@ struct Polygon {
 
   int points_amount = 0;
   bool points_connected = false;
+  Point anchor;
 
   int min_x = std::numeric_limits<int>::max();
   int max_x = std::numeric_limits<int>::min();
@@ -58,6 +68,7 @@ struct Polygon {
       max_y = std::max(new_y, max_y);
     }
     CreateSegments();
+    anchor = {min_x - 1, min_y};
   }
 
   void CreateSegments() {
@@ -80,61 +91,26 @@ struct Polygon {
            << segments[i].b.x << ',' << segments[i].b.y << '\n';
     }
   }
+
+  long double CalculateArea() {
+    int double_area = 0;
+    for (unsigned int i = 0; i < points_amount; ++i) {
+      int j = (i + 1) % points_amount;
+      Point to_i = {points[i].x - anchor.x, points[i].y - anchor.y};
+      Point to_j = {points[j].x - anchor.x, points[j].y - anchor.y};
+      double_area += (to_i ^ to_j);
+    }
+    return Absolufy(double_area / 2.0);
+  }
 };
-
-bool PointOnSegment(const Point &point, const Segment &segment) {
-  Point segment_start_to_point = {point.x - segment.a.x, point.y - segment.a.y};
-  Point point_to_segment_end = {segment.b.x - point.x, segment.b.y - point.y};
-  return (segment_start_to_point ^ point_to_segment_end) == 0 &&
-         (segment_start_to_point * point_to_segment_end) >= 0;
-}
-
-int PointInsidePolygon(const Point &point, const Polygon &polygon) { // 1 - on edge, 2 - inside
-  const int &x = point.x;
-  const int &y = point.y;
-  int intersections = 0;
-  for (unsigned int i = 0; i < polygon.points_amount; ++i) {
-    unsigned int j = (i + 1) % polygon.points_amount;
-
-    if (point == polygon.points[i]) {
-      return 1;
-    }
-    if (PointOnSegment(point, polygon.segments[i])) {
-      return 1;
-    }
-
-    const int &x1 = polygon.points[i].x;
-    const int &y1 = polygon.points[i].y;
-    const int &x2 = polygon.points[j].x;
-    const int &y2 = polygon.points[j].y;
-    if ((y < y1) != (y < y2) &&
-        x < x1 + ((y - y1) / (y2 - y1)) * (x2 - x1)) {
-          ++intersections;
-        }
-  }
-  if (intersections % 2 != 0) {
-    return 2;
-  }
-  return 0;
-}
 
 void Solve() {
   int n = 0;
   cin >> n;
   Polygon polygon(n);
   polygon.AddPointsFromStdInput();
-
-  int double_sum = 0;
-
-  for (int x = polygon.min_x; x <= polygon.max_x; ++x) {
-    for (int y = polygon.min_y; y <= polygon.max_y; ++y) {
-      double_sum += PointInsidePolygon({x, y}, polygon);
-    }
-  }
-
-  long double area = double_sum / 2.0 - 1;
   std::cout.precision(15);
-  std::cout << std::fixed << area << '\n';
+  std::cout << std::fixed << polygon.CalculateArea() << '\n';
 }
 
 int main() {
