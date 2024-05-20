@@ -134,7 +134,7 @@ void Solve() {
 
   long double area = double_sum / 2.0 - 1;
   std::cout.precision(15);
-  std::cout << std::fixed << area;
+  std::cout << std::fixed << area << '\n';
 }
 
 int main() {
