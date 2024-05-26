@@ -4,6 +4,7 @@
 #include <limits>
 #include <queue>
 #include <math.h>
+#include <algorithm>
 
 using std::cin;
 using std::cout;
@@ -75,27 +76,7 @@ struct Segment {
 
 struct Polygon {
   Polygon() = default;
-  Polygon(int amount_of_points) {
-    points_amount = amount_of_points;
-    fixed_points_amount = true;
-    points.resize(points_amount);
-  }
-  bool AddPoint(const Point &new_point) {
-    if (fixed_points_amount) {
-      if (points_added < points_amount) {
-        points[points_added] = new_point;
-        ++points_added;
-        return true;
-      }
-      return false;
-    }
-    points.push_back(new_point);
-    ++points_amount;
-    return true;
-  }
 
-  int points_amount = 0;
-  int points_added = 0;
   bool points_connected = false;
   Point anchor;
 
@@ -108,29 +89,14 @@ struct Polygon {
   vector<Segment> segments;
   bool fixed_points_amount = false;
 
-  void CreateSegments() {
-    if (points_connected) {
-      return;
-    }
-    segments.resize(points_amount);
-    for (int i = 0; i < points_amount; ++i) {
-      int to = i + 1;
-      if (to >= points_amount) {
-        to = 0;
-      }
-      segments[i] = {points[i], points[to]};
-    }
-    points_connected = true;
-  }
-
-  void PrintSegments() {
-    for (unsigned int i = 0; i < points_amount; ++i) {
-      cout << segments[i].a.x << ',' << segments[i].a.y << ' '
-           << segments[i].b.x << ',' << segments[i].b.y << '\n';
+  void PrintPoints() {
+    for (Point p : points) {
+      std::cout << p.x << ' ' << p.y << '\n';
     }
   }
 
   long double CalculateArea() {
+    unsigned int points_amount = points.size();
     int double_area = 0;
     for (unsigned int i = 0; i < points_amount; ++i) {
       int j = (i + 1) % points_amount;
@@ -142,28 +108,39 @@ struct Polygon {
   }
 };
 
+void FindConvexHullByGraham(vector<Point> &points,
+                            vector<Point> &Hull,
+                            const Point& starting_point = {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()})
+{
+  auto compare = [&starting_point] (Point first, Point second) {
+    return ((Vector(starting_point, first) ^ Vector(starting_point, second)) < 0);
+  };
+  std::sort(points.begin(), points.end(), compare);
+  for (Point p : points) {
 
-void DisplayPoints(std::vector<Point> v) {
-  for (unsigned int i = 0; i < v.size(); ++i) {
-    std::cout << v[i].x << ',' << v[i].y << ' ';
+    while (Hull.size() >= 2) {
+      Vector new_vector(Hull[Hull.size() - 1], p);
+      Vector last_vector(Hull[Hull.size() - 2], Hull[Hull.size() - 1]);
+      if ((new_vector ^ last_vector) < 0) {
+        Hull.pop_back();
+      } else {
+        break;
+      }
+    }
+
+    Hull.push_back(p);
   }
-  std::cout << '\n';
 }
-void FindConvexHullAndItsArea(const vector<Point> &points,
+
+void FindConvexHullAndItsArea(vector<Point> &points,
                               Point starting_point = {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()})
 {
-  cout << hull.size() << '\n';
-  Polygon hull_shape(hull.size());
-
-  while (!hull.empty()) {
-    const Point &current_hull_point = hull.front();
-    cout << current_hull_point.x << ' ' << current_hull_point.y << '\n';
-    hull_shape.AddPoint(current_hull_point);
-    hull.pop();
-  }
-
+  Polygon hull;
+  FindConvexHullByGraham(points, hull.points, starting_point);
+  cout << hull.points.size() << '\n';
+  hull.PrintPoints();
   std::cout.precision(1);
-  cout << std::fixed << hull_shape.CalculateArea() << '\n';
+  cout << std::fixed << hull.CalculateArea() << '\n';
 }
 
 int main() {
