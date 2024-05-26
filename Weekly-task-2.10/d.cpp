@@ -41,7 +41,6 @@ struct Polygon {
   Polygon(int amount_of_points) {
     points_amount = amount_of_points;
     points.resize(points_amount);
-    segments.resize(points_amount);
   }
 
   int points_amount = 0;
@@ -54,7 +53,6 @@ struct Polygon {
   int max_y = std::numeric_limits<int>::min();
 
   vector<Point> points;
-  vector<Segment> segments;
   void AddPointsFromStdInput() {
     for (int i = 0; i < points_amount; ++i) {
       int new_x = 0;
@@ -67,29 +65,7 @@ struct Polygon {
       max_x = std::max(new_x, max_x);
       max_y = std::max(new_y, max_y);
     }
-    CreateSegments();
     anchor = {min_x - 1, min_y};
-  }
-
-  void CreateSegments() {
-    if (points_connected) {
-      return;
-    }
-    for (int i = 0; i < points_amount; ++i) {
-      int to = i + 1;
-      if (to >= points_amount) {
-        to = 0;
-      }
-      segments[i] = {points[i], points[to]};
-    }
-    points_connected = true;
-  }
-
-  void PrintSegments() {
-    for (unsigned int i = 0; i < points_amount; ++i) {
-      cout << segments[i].a.x << ',' << segments[i].a.y << ' '
-           << segments[i].b.x << ',' << segments[i].b.y << '\n';
-    }
   }
 
   long double CalculateArea() {

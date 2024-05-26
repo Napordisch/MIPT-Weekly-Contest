@@ -123,11 +123,17 @@ void FindConvexHullByGraham(vector<Point> &points,
       Vector last_vector(Hull[Hull.size() - 2], Hull[Hull.size() - 1]);
       if ((new_vector ^ last_vector) < 0) {
         Hull.pop_back();
+      } else if ((new_vector ^ last_vector) == 0 &&
+                  Vector(Hull[Hull.size() - 2], p).LengthSquared() > last_vector.LengthSquared()) {
+        Hull.pop_back();
       } else {
         break;
       }
     }
 
+    if (Hull.size() > 0 && Hull.back() == p) {
+      continue;
+    }
     Hull.push_back(p);
   }
 }
