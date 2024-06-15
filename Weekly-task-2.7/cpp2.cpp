@@ -16,6 +16,22 @@ class Line;
 class Polygon;
 class Circle;
 
+class Vector {
+ public:
+  Vector(const Point& a, const Point& b);
+  Vector(int x, int y) : x_(x), y_(y) {}
+  int x_ = 0;
+  int y_ = 0;
+
+  int operator^(const Vector& other) const {
+    return (x_ * other.y_) - (y_ * other.x_);
+  }
+
+  int operator*(const Vector& other) const {
+    return x_ * other.x_ + y_ * other.y_;
+  }
+};
+
 class AbstractShape {
  public:
   virtual bool ContainsPoint(const Point& p) const = 0;
@@ -29,24 +45,30 @@ class Point : public AbstractShape {
  public:
   Point(const int& x, const int& y) : x_(x), y_(y) {}
   bool ContainsPoint(const Point& p) const override {
-    return(p.x_ == x_ && p.y_ == y_);
+    return (p.x_ == x_ && p.y_ == y_);
   }
-  bool CrossSegment(const Segment& s) const override {}
-  Point* Clone() const override {}
-  Point* Move(const Vector& v) override {}
-  void Print() const override {}
+  bool CrossSegment(const Segment& s) const override;
+
+  Point* Clone() const override {
+    return new Point(x_, y_);
+  }
+
+  Point* Move(const Vector& v) override {
+    x_ += v.x_;
+    y_ += v.y_;
+    return this;
+  }
+  void Print() const override {
+    std::cout << x_ << ' ' << y_ << '\n';
+  }
   int x_ = 0;
   int y_ = 0;
 };
 
-class Vector {
- public:
-  Vector(const Point& a, const Point& b) : a_(a), b_(b) {}
-
- private:
-  Point a_;
-  Point b_;
-};
+Vector::Vector(const Point& a, const Point& b) {
+  x_ = b.x_ - a.x_;
+  y_ = b.y_ - a.y_;
+}
 
 class Segment : public AbstractShape {
  public:
@@ -57,7 +79,6 @@ class Segment : public AbstractShape {
   Segment* Move(const Vector& v) override {}
   void Print() const override {}
 
- private:
   Point a_;
   Point b_;
 };
@@ -121,6 +142,20 @@ class Circle : public AbstractShape {
   Point center_;
   int radius_;
 };
+
+bool Point::CrossSegment(const Segment& s) const {
+  Vector along_segment(s.b_.x_ - s.a_.x_, s.b_.y_ - s.a_.y_);
+  Vector reversed_along_segment(s.a_.x_ - s.b_.x_, s.a_.y_ - s.b_.y_);
+  Vector start_to_point(x_ - s.a_.x_, y_ - s.a_.y_);
+  Vector end_to_point(x_ - s.b_.x_, y_ - s.b_.y_);
+
+  bool on_line = ((along_segment ^ start_to_point) == 0);
+  bool sharp_angle_from_start = ((along_segment * start_to_point) >= 0);
+  bool sharp_angle_from_end = ((reversed_along_segment * end_to_point) >= 0);
+
+  return on_line && sharp_angle_from_start && sharp_angle_from_end;
+}
+
 }  // namespace geometry
 
 using geometry::Point;
