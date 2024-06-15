@@ -43,7 +43,12 @@ class AbstractShape {
 
 class Point : public AbstractShape {
  public:
+  Point() = default;
   Point(const int& x, const int& y) : x_(x), y_(y) {}
+  Point(const Point& p) {
+    x_ = p.x_;
+    y_ = p.y_;
+  }
   bool ContainsPoint(const Point& p) const override {
     return (p.x_ == x_ && p.y_ == y_);
   }
@@ -61,6 +66,7 @@ class Point : public AbstractShape {
   void Print() const override {
     std::cout << x_ << ' ' << y_ << '\n';
   }
+
   int x_ = 0;
   int y_ = 0;
 };
@@ -73,11 +79,25 @@ Vector::Vector(const Point& a, const Point& b) {
 class Segment : public AbstractShape {
  public:
   Segment(const Point& a, const Point& b) : a_(a), b_(b) {}
-  bool ContainsPoint(const Point& p) const override {}
-  bool CrossSegment(const Segment& s) const override {}
-  Segment* Clone() const override {}
-  Segment* Move(const Vector& v) override {}
-  void Print() const override {}
+  bool ContainsPoint(const Point& p) const override;
+  bool CrossSegment(const Segment& s) const override;
+  Segment* Clone() const override {
+    return new Segment(a_, b_);
+  }
+  Segment* Move(const Vector& v) override {
+    a_.Move(v);
+    b_.Move(v);
+    return this;
+  }
+  void Print() const override {
+    std::cout << a_.x_ << ' ' << a_.y_ << ' ' << b_.x_ << ' ' << b_.y_ << '\n';
+  }
+
+  void Reverse() {
+    Point temp = a_;
+    a_ = b_;
+    b_ = temp;
+  }
 
   Point a_;
   Point b_;
@@ -100,13 +120,20 @@ class Line : public AbstractShape {
 class Ray : public AbstractShape {
  public:
   Ray(const Point& a, const Point& b) : a_(a), b_(b) {}
+  Ray(const Segment& s) {
+    a_ = s.a_;
+    b_ = s.b_;
+  }
   bool ContainsPoint(const Point& p) const override {}
   bool CrossSegment(const Segment& s) const override {}
   Ray* Clone() const override {}
   Ray* Move(const Vector& v) override {}
   void Print() const override {}
 
- private:
+
+  Vector Direction() const {
+    return Vector(b_.x_ - a_.x_, b_.y_ - a_.y_);
+  }
   Point a_;
   Point b_;
 };
@@ -143,17 +170,111 @@ class Circle : public AbstractShape {
   int radius_;
 };
 
-bool Point::CrossSegment(const Segment& s) const {
+bool PointOnSegment(const Point &p, const Segment &s) {
   Vector along_segment(s.b_.x_ - s.a_.x_, s.b_.y_ - s.a_.y_);
   Vector reversed_along_segment(s.a_.x_ - s.b_.x_, s.a_.y_ - s.b_.y_);
-  Vector start_to_point(x_ - s.a_.x_, y_ - s.a_.y_);
-  Vector end_to_point(x_ - s.b_.x_, y_ - s.b_.y_);
+  Vector start_to_point(p.x_ - s.a_.x_, p.y_ - s.a_.y_);
+  Vector end_to_point(p.x_ - s.b_.x_, p.y_ - s.b_.y_);
 
   bool on_line = ((along_segment ^ start_to_point) == 0);
   bool sharp_angle_from_start = ((along_segment * start_to_point) >= 0);
   bool sharp_angle_from_end = ((reversed_along_segment * end_to_point) >= 0);
 
   return on_line && sharp_angle_from_start && sharp_angle_from_end;
+}
+
+Segment reverse(const Segment &s) {
+  Segment to_reverse = s;
+  to_reverse.Reverse();
+  return to_reverse;
+}
+
+bool PointOnRay(const Point &p, const Ray &r) {
+  Ray aux_ray(r.a_, p);
+  bool on_line = ((r.Direction() ^ aux_ray.Direction()) == 0);
+  bool sharp_angle = ((r.Direction() * aux_ray.Direction()) >= 0);
+  return on_line && sharp_angle;
+}
+
+bool RaySegmentIntersection(const Ray &the_ray, const Segment &the_segment) {
+  Vector s_a_to_ray_start(the_ray.a_.x_ - the_segment.a_.x_,
+                         the_ray.a_.y_ - the_segment.a_.y_);
+  Vector along_the_segment(the_segment.b_.x_ - the_segment.a_.x_,
+                          the_segment.b_.y_ - the_segment.a_.y_);
+  Vector along_the_ray = the_ray.Direction();
+
+  int first = (s_a_to_ray_start ^ along_the_segment);
+  int second = (the_ray.Direction() ^ along_the_segment);
+
+  bool different_cross_product_signs_by_formula =
+      (first < 0 && second > 0) || (first == 0 && second > 0) ||
+      (first < 0 && second == 0) || (first > 0 && second < 0) ||
+      (first == 0 && second < 0) || (first > 0 && second == 0);
+
+  Vector ray_start_to_a(the_segment.a_.x_ - the_ray.a_.x_,
+                       the_segment.a_.y_ - the_ray.a_.y_);
+  Vector ray_start_to_b(the_segment.b_.x_ - the_ray.a_.x_,
+                       the_segment.b_.y_ - the_ray.a_.y_);
+  int ray_to_a_angle = (along_the_ray ^ ray_start_to_a);
+  int ray_to_b_angle = (along_the_ray ^ ray_start_to_b);
+
+  bool a_on_ray = PointOnRay(the_segment.a_, the_ray);
+  bool b_on_ray = PointOnRay(the_segment.b_, the_ray);
+
+  bool different_angle_signs = (ray_to_a_angle < 0 && ray_to_b_angle > 0) ||
+                               (ray_to_a_angle > 0 && ray_to_b_angle < 0);
+
+  return (different_cross_product_signs_by_formula && different_angle_signs) ||
+         a_on_ray || b_on_ray;
+}
+
+
+bool SegmentsIntersection(const Segment &first, const Segment &second) {
+  if (!RaySegmentIntersection(Ray(first), second)) {
+    return false;
+  }
+  if (!RaySegmentIntersection(Ray(second), first)) {
+    return false;
+  }
+
+  Segment first_reversed = reverse(first);
+
+  if (!RaySegmentIntersection(Ray(first_reversed), second)) {
+    return false;
+  }
+  if (!RaySegmentIntersection(Ray(second), first_reversed)) {
+    return false;
+  }
+
+  Segment second_reversed = reverse(second);
+
+  if (!RaySegmentIntersection(Ray(second_reversed), first)) {
+    return false;
+  }
+  if (!RaySegmentIntersection(Ray(first), second_reversed)) {
+    return false;
+  }
+
+  if (!RaySegmentIntersection(Ray(first_reversed), second_reversed)) {
+    return false;
+  }
+  if (!RaySegmentIntersection(Ray(second_reversed), first_reversed)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool Point::CrossSegment(const Segment& s) const {
+  return PointOnSegment(*this, s);
+}
+
+bool Segment::ContainsPoint(const Point& p) const {
+  return PointOnSegment(p, *this);
+}
+
+bool Segment::CrossSegment(const Segment &other) const{
+  return SegmentsIntersection(*this, other);
 }
 
 }  // namespace geometry
