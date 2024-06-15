@@ -28,13 +28,13 @@ class AbstractShape {
 class Point : public AbstractShape {
  public:
   Point(const int& x, const int& y) : x_(x), y_(y) {}
-  bool ContainsPoint(const Point& p) const override {}
+  bool ContainsPoint(const Point& p) const override {
+    return(p.x_ == x_ && p.y_ == y_);
+  }
   bool CrossSegment(const Segment& s) const override {}
   Point* Clone() const override {}
   Point* Move(const Vector& v) override {}
   void Print() const override {}
-
- private:
   int x_ = 0;
   int y_ = 0;
 };
