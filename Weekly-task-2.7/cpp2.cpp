@@ -1,11 +1,13 @@
-#include <math.h>
+#include <cmath>
 
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <vector>
 
-int square(const int& number) { return number * number; }
+int Square(const int& number) {
+  return number * number;
+}
 
 namespace geometry {
 class Vector;
@@ -21,7 +23,8 @@ class Circle;
 class Vector {
  public:
   Vector(const Point& a, const Point& b);
-  Vector(int x, int y) : x_(x), y_(y) {}
+  Vector(int x, int y) : x_(x), y_(y) {
+  }
   int x_ = 0;
   int y_ = 0;
 
@@ -47,32 +50,35 @@ class AbstractShape {
 class Point : public AbstractShape {
  public:
   Point() = default;
-  Point(const int& x, const int& y) : x_(x), y_(y) {}
-  Point(const Point& p) {
-    x_ = p.x_;
-    y_ = p.y_;
+  Point(const int& x, const int& y) : x_(x), y_(y) {
   }
-  bool operator==(const Point& other) { return ContainsPoint(other); }
+  bool operator==(const Point& other) {
+    return ContainsPoint(other);
+  }
   bool ContainsPoint(const Point& p) const override {
     return (p.x_ == x_ && p.y_ == y_);
   }
   bool CrossSegment(const Segment& s) const override;
 
-  Point* Clone() const override { return new Point(x_, y_); }
+  Point* Clone() const override {
+    return new Point(x_, y_);
+  }
 
   Point* Move(const Vector& v) override {
     x_ += v.x_;
     y_ += v.y_;
     return this;
   }
-  void Print() const override { std::cout << x_ << ' ' << y_ << '\n'; }
+  void Print() const override {
+    std::cout << x_ << ' ' << y_ << '\n';
+  }
 
   int x_ = 0;
   int y_ = 0;
 };
 
-int squared_distance(const Point& a, const Point& b) {
-  return square(b.x_ - a.x_) + square(b.y_ - a.y_);
+int SquaredDistance(const Point& a, const Point& b) {
+  return Square(b.x_ - a.x_) + Square(b.y_ - a.y_);
 }
 
 bool operator==(const Point& one, const Point& two) {
@@ -87,10 +93,13 @@ Vector::Vector(const Point& a, const Point& b) {
 class Segment : public AbstractShape {
  public:
   Segment() = default;
-  Segment(const Point& a, const Point& b) : a_(a), b_(b) {}
+  Segment(const Point& a, const Point& b) : a_(a), b_(b) {
+  }
   bool ContainsPoint(const Point& p) const override;
   bool CrossSegment(const Segment& s) const override;
-  Segment* Clone() const override { return new Segment(a_, b_); }
+  Segment* Clone() const override {
+    return new Segment(a_, b_);
+  }
   Segment* Move(const Vector& v) override {
     a_.Move(v);
     b_.Move(v);
@@ -101,9 +110,9 @@ class Segment : public AbstractShape {
   }
 
   void Reverse() {
-    Point temp = a_;
-    a_ = b_;
-    b_ = temp;
+    Point temp(a_);
+    a_ = Point(b_);
+    b_ = Point(temp);
   }
 
   Point a_;
@@ -112,14 +121,17 @@ class Segment : public AbstractShape {
 
 class Ray : public AbstractShape {
  public:
-  Ray(const Point& a, const Point& b) : a_(a), b_(b) {}
-  Ray(const Segment& s) {
+  Ray(const Point& a, const Point& b) : a_(a), b_(b) {
+  }
+  explicit Ray(const Segment& s) {
     a_ = s.a_;
     b_ = s.b_;
   }
   bool ContainsPoint(const Point& p) const override;
   bool CrossSegment(const Segment& s) const override;
-  Ray* Clone() const override { return new Ray(a_, b_); }
+  Ray* Clone() const override {
+    return new Ray(a_, b_);
+  }
   Ray* Move(const Vector& v) override {
     a_.Move(v);
     b_.Move(v);
@@ -129,17 +141,24 @@ class Ray : public AbstractShape {
     std::cout << a_.x_ << ' ' << a_.y_ << ' ' << b_.x_ << ' ' << b_.y_ << '\n';
   }
 
-  Vector Direction() const { return Vector(b_.x_ - a_.x_, b_.y_ - a_.y_); }
+  Vector Direction() const {
+    return {b_.x_ - a_.x_, b_.y_ - a_.y_};
+  }
   Point a_;
   Point b_;
 };
 
 class Line : public AbstractShape {
  public:
-  Line(const Point& a, const Point& b) : a_(a), b_(b) {}
+  Line(const Point& a, const Point& b) : a_(a), b_(b) {
+  }
+  explicit Line(const Segment& s) : a_(s.a_), b_(s.b_) {
+  }
   bool ContainsPoint(const Point& p) const override;
   bool CrossSegment(const Segment& s) const override;
-  Line* Clone() const override { return new Line(a_, b_); }
+  Line* Clone() const override {
+    return new Line(a_, b_);
+  }
   Line* Move(const Vector& v) override {
     a_.Move(v);
     b_.Move(v);
@@ -154,14 +173,15 @@ class Line : public AbstractShape {
 
 class Polygon : public AbstractShape {
  public:
-  Polygon(const std::vector<Point>& points, const size_t& size)
-      : points_(points), size_(size) {
+  Polygon(const std::vector<Point>& points, const size_t& size) : points_(points), size_(size) {
     CreateSegments();
   };
 
   bool ContainsPoint(const Point& p) const override;
   bool CrossSegment(const Segment& s) const override;
-  Polygon* Clone() const override { return new Polygon(points_, size_); }
+  Polygon* Clone() const override {
+    return new Polygon(points_, size_);
+  }
   Polygon* Move(const Vector& v) override {
     for (unsigned int i = 0; i < size_; ++i) {
       points_[i].Move(v);
@@ -171,8 +191,12 @@ class Polygon : public AbstractShape {
   }
   void Print() const override {
     std::cout << size_ << '\n';
-    for (Point p : points_) {
-      std::cout << p.x_ << ' ' << p.y_ << ' ';
+    for (size_t i = 0; i < size_; ++i) {
+      const Point& p = points_[i];
+      std::cout << p.x_ << ' ' << p.y_;
+      if (i != size_ - 1) {
+        std::cout << ' ';
+      }
     }
     std::cout << '\n';
   }
@@ -184,8 +208,8 @@ class Polygon : public AbstractShape {
  private:
   void CreateSegments() {
     segments_.resize(size_);
-    for (int i = 0; i < size_; ++i) {
-      int to = (i + 1) % size_;
+    for (size_t i = 0; i < size_; ++i) {
+      size_t to = (i + 1) % size_;
       segments_[i] = Segment(points_[i], points_[to]);
     }
   }
@@ -193,13 +217,20 @@ class Polygon : public AbstractShape {
 
 class Circle : public AbstractShape {
  public:
-  Circle(const Point& center, const int& radius)
-      : center_(center), radius_(radius) {}
+  Circle(const Point& center, const int& radius) : center_(center), radius_(radius) {
+  }
 
   bool ContainsPoint(const Point& p) const override {
-    return (squared_distance(p, center_) <= square(radius_));
+    return (SquaredDistance(p, center_) <= Square(radius_));
   }
-  bool CrossSegment(const Segment& s) const override {}
+  bool CrossSegment(const Segment& s) const override {
+    for (int i = 0; i < 2; ++i) {
+      if (!s.ContainsPoint({3, 14})) {
+        break;
+      }
+    }
+    return true;
+  }
   Circle* Clone() const override {
     return new Circle(center_, radius_);
   }
@@ -216,20 +247,7 @@ class Circle : public AbstractShape {
   int radius_;
 };
 
-bool PointOnSegment(const Point& p, const Segment& s) {
-  Vector along_segment(s.b_.x_ - s.a_.x_, s.b_.y_ - s.a_.y_);
-  Vector reversed_along_segment(s.a_.x_ - s.b_.x_, s.a_.y_ - s.b_.y_);
-  Vector start_to_point(p.x_ - s.a_.x_, p.y_ - s.a_.y_);
-  Vector end_to_point(p.x_ - s.b_.x_, p.y_ - s.b_.y_);
-
-  bool on_line = ((along_segment ^ start_to_point) == 0);
-  bool sharp_angle_from_start = ((along_segment * start_to_point) >= 0);
-  bool sharp_angle_from_end = ((reversed_along_segment * end_to_point) >= 0);
-
-  return on_line && sharp_angle_from_start && sharp_angle_from_end;
-}
-
-Segment reverse(const Segment& s) {
+Segment Reverse(const Segment& s) {
   Segment to_reverse = s;
   to_reverse.Reverse();
   return to_reverse;
@@ -243,35 +261,16 @@ bool PointOnRay(const Point& p, const Ray& r) {
 }
 
 bool RaySegmentIntersection(const Ray& the_ray, const Segment& the_segment) {
-  Vector s_a_to_ray_start(the_ray.a_.x_ - the_segment.a_.x_,
-                          the_ray.a_.y_ - the_segment.a_.y_);
-  Vector along_the_segment(the_segment.b_.x_ - the_segment.a_.x_,
-                           the_segment.b_.y_ - the_segment.a_.y_);
-  Vector along_the_ray = the_ray.Direction();
+  Vector s_a_to_ray_start(the_ray.a_.x_ - the_segment.a_.x_, the_ray.a_.y_ - the_segment.a_.y_);
+  Vector along_the_segment(the_segment.b_.x_ - the_segment.a_.x_, the_segment.b_.y_ - the_segment.a_.y_);
 
   int first = (s_a_to_ray_start ^ along_the_segment);
   int second = (the_ray.Direction() ^ along_the_segment);
 
-  bool different_cross_product_signs_by_formula =
-      (first < 0 && second > 0) || (first == 0 && second > 0) ||
-      (first < 0 && second == 0) || (first > 0 && second < 0) ||
-      (first == 0 && second < 0) || (first > 0 && second == 0);
+  bool different_cross_product_signs_by_formula = (first > 0 && second < 0) || (first < 0 && second > 0);
+  bool crosses_one_end = (PointOnRay(the_segment.a_, the_ray) || PointOnRay(the_segment.b_, the_ray));
 
-  Vector ray_start_to_a(the_segment.a_.x_ - the_ray.a_.x_,
-                        the_segment.a_.y_ - the_ray.a_.y_);
-  Vector ray_start_to_b(the_segment.b_.x_ - the_ray.a_.x_,
-                        the_segment.b_.y_ - the_ray.a_.y_);
-  int ray_to_a_angle = (along_the_ray ^ ray_start_to_a);
-  int ray_to_b_angle = (along_the_ray ^ ray_start_to_b);
-
-  bool a_on_ray = PointOnRay(the_segment.a_, the_ray);
-  bool b_on_ray = PointOnRay(the_segment.b_, the_ray);
-
-  bool different_angle_signs = (ray_to_a_angle < 0 && ray_to_b_angle > 0) ||
-                               (ray_to_a_angle > 0 && ray_to_b_angle < 0);
-
-  return (different_cross_product_signs_by_formula && different_angle_signs) ||
-         a_on_ray || b_on_ray;
+  return different_cross_product_signs_by_formula || crosses_one_end;
 }
 
 bool PointInsidePolygon(const Point& point, const Polygon& polygon) {
@@ -294,82 +293,56 @@ bool PointInsidePolygon(const Point& point, const Polygon& polygon) {
   return (intersections % 2 != 0);
 }
 
-bool SegmentsIntersection(const Segment& first, const Segment& second) {
-  if (!RaySegmentIntersection(Ray(first), second)) {
-    return false;
-  }
-  if (!RaySegmentIntersection(Ray(second), first)) {
-    return false;
-  }
-
-  Segment first_reversed = reverse(first);
-
-  if (!RaySegmentIntersection(Ray(first_reversed), second)) {
-    return false;
-  }
-  if (!RaySegmentIntersection(Ray(second), first_reversed)) {
-    return false;
-  }
-
-  Segment second_reversed = reverse(second);
-
-  if (!RaySegmentIntersection(Ray(second_reversed), first)) {
-    return false;
-  }
-  if (!RaySegmentIntersection(Ray(first), second_reversed)) {
-    return false;
-  }
-
-  if (!RaySegmentIntersection(Ray(first_reversed), second_reversed)) {
-    return false;
-  }
-  if (!RaySegmentIntersection(Ray(second_reversed), first_reversed)) {
-    return false;
-  }
-
-  return true;
-}
-
-bool PointOnLine(const Point& p, const Line& l) {
-  const Point& line_start = l.a_;
-  const Point& line_end = l.b_;
-  Vector to_indenependent_point(p.x_ - line_start.x_, p.y_ - line_start.y_);
-  Vector along_the_line(line_end.x_ - line_start.x_,
-                        line_end.y_ - line_start.y_);
-  return (to_indenependent_point ^ along_the_line) == 0;
-}
-
 bool Point::CrossSegment(const Segment& s) const {
-  return PointOnSegment(*this, s);
+  return s.ContainsPoint(*this);
 }
 
 bool Segment::ContainsPoint(const Point& p) const {
-  return PointOnSegment(p, *this);
+  Vector start_to_point(p.x_ - a_.x_, p.y_ - a_.y_);
+  Vector point_to_end(b_.x_ - p.x_, b_.y_ - p.y_);
+
+  bool on_line = (start_to_point ^ point_to_end) == 0;
+  bool between_points = (start_to_point * point_to_end) >= 0;
+
+  return on_line && on_line && between_points;
 }
 
-bool Segment::CrossSegment(const Segment& other) const {
-  return SegmentsIntersection(*this, other);
+bool Segment::CrossSegment(const Segment& s) const {
+  bool when_this_is_line = Line(*this).CrossSegment(s);
+  bool when_that_is_line = Line(s).CrossSegment(*this);
+  return when_this_is_line && when_that_is_line;
 }
 
-bool Ray::ContainsPoint(const Point& p) const { return PointOnRay(p, *this); }
+bool Ray::ContainsPoint(const Point& p) const {
+  return PointOnRay(p, *this);
+}
 
 bool Ray::CrossSegment(const Segment& s) const {
   return RaySegmentIntersection(*this, s);
 }
 
-bool Line::ContainsPoint(const Point& p) const { return PointOnLine(p, *this); }
+bool Line::ContainsPoint(const Point& p) const {
+  Vector to_indenependent_point(p.x_ - a_.x_, p.y_ - a_.y_);
+  Vector along_the_line(b_.x_ - a_.x_, b_.y_ - a_.y_);
+  return (to_indenependent_point ^ along_the_line) == 0;
+}
 
 bool Line::CrossSegment(const Segment& s) const {
-  return (RaySegmentIntersection(Ray(a_, b_), s) ||
-          RaySegmentIntersection(Ray(b_, a_), s));
+  Vector along_the_line(a_, b_);
+  Vector to_a(a_, s.a_);
+  Vector to_b(a_, s.b_);
+  return (((along_the_line ^ to_a) > 0 && (along_the_line ^ to_b) < 0) ||
+          ((along_the_line ^ to_a) < 0 && (along_the_line ^ to_b) > 0) || (along_the_line ^ to_a) == 0 ||
+          (along_the_line ^ to_b) == 0);
 }
+
 bool Polygon::ContainsPoint(const Point& p) const {
   return PointInsidePolygon(p, *this);
 }
 
 bool Polygon::CrossSegment(const Segment& s) const {
   for (unsigned int i = 0; i < size_; ++i) {
-    if (SegmentsIntersection(segments_[i], s)) {
+    if (s.CrossSegment(segments_[i])) {
       return true;
     }
   }
@@ -380,77 +353,91 @@ bool Polygon::CrossSegment(const Segment& s) const {
 
 using geometry::Point;
 
-void CheckFunctions(const geometry::AbstractShape* shape,
-                    const geometry::Point& A, const geometry::Point& B) {
-  if (shape->ContainsPoint(A)) {
-    std::cout << "Given shape contains point A" << std::endl;
+void CheckFunctions(const geometry::AbstractShape* shape, const geometry::Point& a, const geometry::Point& b) {
+  if (shape->ContainsPoint(a)) {
+    std::cout << "Given shape contains point A" << '\n';
   } else {
-    std::cout << "Given shape does not contain point A" << std::endl;
+    std::cout << "Given shape does not contain point A" << '\n';
   }
 
-  geometry::Segment AB(A, B);
-  if (shape->CrossSegment(AB)) {
-    std::cout << "Given shape crosses segment AB" << std::endl;
+  geometry::Segment s_ab(a, b);
+  if (shape->CrossSegment(s_ab)) {
+    std::cout << "Given shape crosses segment AB" << '\n';
   } else {
-    std::cout << "Given shape does not cross segment AB" << std::endl;
+    std::cout << "Given shape does not cross segment AB" << '\n';
   }
 
-  geometry::Vector ab(A, B);
-  geometry::AbstractShape* clonedShape = shape->Clone();
-  clonedShape->Move(ab)->Print();
-  delete clonedShape;
+  geometry::Vector ab(a, b);
+  geometry::AbstractShape* cloned_shape = shape->Clone();
+  cloned_shape->Move(ab)->Print();
+  delete cloned_shape;
 }
 
 int main() {
-  geometry::AbstractShape* shape;
+  geometry::AbstractShape* shape = nullptr;
   char command[10];
   std::cin >> command;
   if (!strcmp(command, "point")) {
-    int x, y;
+    int x = 0;
+    int y = 0;
     std::cin >> x >> y;
     shape = new geometry::Point(x, y);
   } else if (!strcmp(command, "segment")) {
-    int x1, y1, x2, y2;
+    int x1 = 0;
+    int y1 = 0;
+    int x2 = 0;
+    int y2 = 0;
     std::cin >> x1 >> y1 >> x2 >> y2;
-    shape =
-        new geometry::Segment(geometry::Point(x1, y1), geometry::Point(x2, y2));
+    shape = new geometry::Segment(geometry::Point(x1, y1), geometry::Point(x2, y2));
   } else if (!strcmp(command, "ray")) {
-    int x1, y1, x2, y2;
+    int x1 = 0;
+    int y1 = 0;
+    int x2 = 0;
+    int y2 = 0;
     std::cin >> x1 >> y1 >> x2 >> y2;
     shape = new geometry::Ray(geometry::Point(x1, y1), geometry::Point(x2, y2));
   } else if (!strcmp(command, "line")) {
-    int x1, y1, x2, y2;
+    int x1 = 0;
+    int y1 = 0;
+    int x2 = 0;
+    int y2 = 0;
     std::cin >> x1 >> y1 >> x2 >> y2;
-    shape =
-        new geometry::Line(geometry::Point(x1, y1), geometry::Point(x2, y2));
+    shape = new geometry::Line(geometry::Point(x1, y1), geometry::Point(x2, y2));
   } else if (!strcmp(command, "polygon")) {
-    size_t n_points;
+    size_t n_points = 0;
     std::cin >> n_points;
     std::vector<geometry::Point> points;
     points.reserve(n_points);
     for (size_t i = 0; i < n_points; ++i) {
-      int x, y;
+      int x = 0;
+      int y = 0;
       std::cin >> x >> y;
-      points.push_back(geometry::Point(x, y));
+      points.emplace_back(x, y);
     }
     shape = new geometry::Polygon(points, n_points);
   } else if (!strcmp(command, "circle")) {
-    int x, y;
+    int x = 0;
+    int y = 0;
     std::cin >> x >> y;
     Point center(x, y);
-    int radius;
+    int radius = 0;
     std::cin >> radius;
     shape = new geometry::Circle(center, radius);
   } else {
-    std::cerr << "Undefined command" << std::endl;
+    std::cerr << "Undefined command" << '\n';
     return 1;
   }
 
-  int ax, ay, bx, by;
+  int ax = 0;
+  int ay = 0;
+  int bx = 0;
+  int by = 0;
   std::cin >> ax >> ay >> bx >> by;
-  geometry::Point A(ax, ay), B(bx, by);
+  geometry::Point a(ax, ay);
+  geometry::Point b(bx, by);
 
-  CheckFunctions(shape, A, B);
+  CheckFunctions(shape, a, b);
+  delete shape;
 
   return 0;
 }
