@@ -310,6 +310,11 @@ bool Segment::ContainsPoint(const Point& p) const {
 bool Segment::CrossSegment(const Segment& s) const {
   bool when_this_is_line = Line(*this).CrossSegment(s);
   bool when_that_is_line = Line(s).CrossSegment(*this);
+  if ((Vector(s.a_, s.b_) ^ Vector(a_, b_)) == 0) {
+    if (!(ContainsPoint(s.a_) || ContainsPoint(s.b_) || s.ContainsPoint(a_) || s.ContainsPoint(b_))) {
+      return false;
+    }
+  }
   return when_this_is_line && when_that_is_line;
 }
 
