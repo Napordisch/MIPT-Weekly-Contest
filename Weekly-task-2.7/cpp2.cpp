@@ -77,6 +77,10 @@ class Point : public AbstractShape {
   int y_ = 0;
 };
 
+long double Length(const Point& a, const Point& b) {
+  return sqrtl((b.x_ - a.x_) * (b.x_ - a.x_) + (b.y_ - a.y_) * (b.y_ - a.y_));
+}
+
 int SquaredDistance(const Point& a, const Point& b) {
   return Square(b.x_ - a.x_) + Square(b.y_ - a.y_);
 }
@@ -223,14 +227,22 @@ class Circle : public AbstractShape {
   bool ContainsPoint(const Point& p) const override {
     return (SquaredDistance(p, center_) <= Square(radius_));
   }
+
   bool CrossSegment(const Segment& s) const override {
-    for (int i = 0; i < 2; ++i) {
-      if (!s.ContainsPoint({3, 14})) {
-        break;
-      }
+    long double seg_length = Length(s.a_, s.b_);
+    long double seg_a_to_center = Length(s.a_, center_);
+    long double seg_b_to_center = Length(s.b_, center_);
+    if (seg_a_to_center < radius_ && seg_b_to_center < radius_) {
+      return false;
     }
-    return true;
+    long double half_perimeter = (seg_length + seg_a_to_center + seg_b_to_center) / 2;
+    long double area = sqrtl(half_perimeter * (half_perimeter - seg_length) * (half_perimeter - seg_a_to_center) *
+                             (half_perimeter - seg_b_to_center));
+
+    long double dist = (area * 2) / seg_length;
+    return seg_a_to_center <= radius_ || seg_b_to_center <= radius_ || dist <= radius_;
   }
+
   Circle* Clone() const override {
     return new Circle(center_, radius_);
   }
@@ -246,52 +258,6 @@ class Circle : public AbstractShape {
   Point center_;
   int radius_;
 };
-
-Segment Reverse(const Segment& s) {
-  Segment to_reverse = s;
-  to_reverse.Reverse();
-  return to_reverse;
-}
-
-bool PointOnRay(const Point& p, const Ray& r) {
-  Ray aux_ray(r.a_, p);
-  bool on_line = ((r.Direction() ^ aux_ray.Direction()) == 0);
-  bool sharp_angle = ((r.Direction() * aux_ray.Direction()) >= 0);
-  return on_line && sharp_angle;
-}
-
-bool RaySegmentIntersection(const Ray& the_ray, const Segment& the_segment) {
-  Vector s_a_to_ray_start(the_ray.a_.x_ - the_segment.a_.x_, the_ray.a_.y_ - the_segment.a_.y_);
-  Vector along_the_segment(the_segment.b_.x_ - the_segment.a_.x_, the_segment.b_.y_ - the_segment.a_.y_);
-
-  int first = (s_a_to_ray_start ^ along_the_segment);
-  int second = (the_ray.Direction() ^ along_the_segment);
-
-  bool different_cross_product_signs_by_formula = (first > 0 && second < 0) || (first < 0 && second > 0);
-  bool crosses_one_end = (PointOnRay(the_segment.a_, the_ray) || PointOnRay(the_segment.b_, the_ray));
-
-  return different_cross_product_signs_by_formula || crosses_one_end;
-}
-
-bool PointInsidePolygon(const Point& point, const Polygon& polygon) {
-  const int& x = point.x_;
-  const int& y = point.y_;
-  int intersections = 0;
-  for (unsigned int i = 0; i < polygon.size_; ++i) {
-    unsigned int j = (i + 1) % polygon.size_;
-    if (point == polygon.points_[i] || point == polygon.points_[j]) {
-      return true;
-    }
-    const int& x1 = polygon.points_[i].x_;
-    const int& y1 = polygon.points_[i].y_;
-    const int& x2 = polygon.points_[j].x_;
-    const int& y2 = polygon.points_[j].y_;
-    if ((y < y1) != (y < y2) && x < x1 + ((y - y1) / (y2 - y1)) * (x2 - x1)) {
-      ++intersections;
-    }
-  }
-  return (intersections % 2 != 0);
-}
 
 bool Point::CrossSegment(const Segment& s) const {
   return s.ContainsPoint(*this);
@@ -319,11 +285,23 @@ bool Segment::CrossSegment(const Segment& s) const {
 }
 
 bool Ray::ContainsPoint(const Point& p) const {
-  return PointOnRay(p, *this);
+  Ray aux_ray(a_, p);
+  bool on_line = ((Direction() ^ aux_ray.Direction()) == 0);
+  bool sharp_angle = ((Direction() * aux_ray.Direction()) >= 0);
+  return on_line && sharp_angle;
 }
 
 bool Ray::CrossSegment(const Segment& s) const {
-  return RaySegmentIntersection(*this, s);
+  Vector s_a_to_ray_start(a_.x_ - s.a_.x_, a_.y_ - s.a_.y_);
+  Vector along_the_segment(s.b_.x_ - s.a_.x_, s.b_.y_ - s.a_.y_);
+
+  int first = (s_a_to_ray_start ^ along_the_segment);
+  int second = (Direction() ^ along_the_segment);
+
+  bool different_cross_product_signs_by_formula = (first > 0 && second < 0) || (first < 0 && second > 0);
+  bool crosses_one_end = (ContainsPoint(s.a_) || ContainsPoint(s.b_));
+
+  return different_cross_product_signs_by_formula || crosses_one_end;
 }
 
 bool Line::ContainsPoint(const Point& p) const {
@@ -342,7 +320,23 @@ bool Line::CrossSegment(const Segment& s) const {
 }
 
 bool Polygon::ContainsPoint(const Point& p) const {
-  return PointInsidePolygon(p, *this);
+  const int& x = p.x_;
+  const int& y = p.y_;
+  int intersections = 0;
+  for (unsigned int i = 0; i < size_; ++i) {
+    unsigned int j = (i + 1) % size_;
+    if (p == points_[i] || p == points_[j]) {
+      return true;
+    }
+    const int& x1 = points_[i].x_;
+    const int& y1 = points_[i].y_;
+    const int& x2 = points_[j].x_;
+    const int& y2 = points_[j].y_;
+    if ((y < y1) != (y < y2) && x < x1 + ((y - y1) / (y2 - y1)) * (x2 - x1)) {
+      ++intersections;
+    }
+  }
+  return (intersections % 2 != 0);
 }
 
 bool Polygon::CrossSegment(const Segment& s) const {
