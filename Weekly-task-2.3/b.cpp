@@ -1,89 +1,85 @@
+#include <cstdint>
 #include <iostream>
 #include <vector>
-#include <stack>
 
 using std::cin;
 using std::cout;
-
-using std::stack;
 using std::vector;
 
-struct Graph {
-  explicit Graph(int n) : state(n), adjacency_list(n), size(n) {
-  }
-  void AddEdge(int from, int to) {
-    --from;
-    --to;
-    adjacency_list[from].push_back(to);
-  }
+bool DepthFirstSearch(vector<uint32_t> *proximity_list, uint32_t vertexes_amount, uint16_t *states, uint32_t start,
+                      vector<uint32_t> &loop, bool loop_exists) {
+  states[start] = 1;
+  const vector<uint32_t> &children = proximity_list[start];
+  loop.push_back(start);
 
-  vector<int> state;
-  stack<int> cycle;
-  bool cycle_complete;
-  vector<vector<int>> adjacency_list;
-  int size;
+  for (uint32_t i = 0; i < children.size(); ++i) {
+    if (states[children[i]] == 0) {
+      loop_exists = DepthFirstSearch(proximity_list, vertexes_amount, states, children[i], loop, loop_exists);
 
-  bool FindCycles() {
-    for (int i = 0; i < size; ++i) {
-      if (state[i] == 0) {
-        if (FindCycle(i)) {
-          return true;
-        }
+      if (loop_exists) {
+        return true;
       }
     }
-    return false;
+    if (states[children[i]] == 1) {
+      return true;
+    }
+    if (states[children[i]] == 2) {
+      loop.pop_back();
+      return false;
+    }
+  }
+  states[start] = 2;
+  loop.pop_back();
+  return false;
+}
+
+int main() {
+  uint32_t vertexes_amount = 0;
+  uint32_t edges_amount = 0;
+  cin >> vertexes_amount >> edges_amount;
+  auto *states = new uint16_t[vertexes_amount]{0};  // 0 - white, 1 - grey, 2 - black
+  auto *proximity_list = new vector<uint32_t>[vertexes_amount];
+
+  for (uint32_t i = 0; i < edges_amount; ++i) {
+    uint32_t from = 0;
+    uint32_t to = 0;
+    cin >> from >> to;
+    if (from != 0 && to != 0) {
+      proximity_list[from - 1].push_back(to - 1);
+    }
   }
 
-  bool FindCycle(int start) {
-    state[start] = 1;
-    bool cycle_exists = false;
-    for (int vertex : adjacency_list[start]) {
-      if (state[vertex] == 1) {
-        cycle_exists = true;
-        state[vertex] = 2;
-      } else if (state[vertex] == 0) {
-        cycle_exists = FindCycle(vertex);
-      }
-      if (cycle_exists) {
+  //  list display
+  //	for (uint32_t i = 0; i < vertexes_amount; ++i) {
+  //		for (uint32_t j = 0; j < proximity_list[i].size(); ++j) {
+  //			cout << proximity_list[i][j] << " ";
+  //		}
+  //		cout << "\n";
+  //	}
+
+  vector<uint32_t> loop;
+  bool loop_exists = false;
+  for (uint32_t i = 0; i < vertexes_amount; ++i) {
+    if (states[i] == 0) {
+      if (DepthFirstSearch(proximity_list, vertexes_amount, states, i, loop, loop_exists)) {
+        loop_exists = true;
         break;
       }
     }
+  }
 
-    if (!cycle_complete && cycle_exists) {
-      cycle.push(start);
+  if (loop_exists) {
+    cout << "YES"
+         << "\n";
+    for (uint32_t i = 0; i < loop.size(); ++i) {
+      cout << loop[i] + 1 << " ";
     }
-
-    if (state[start] == 2) {
-      cycle_complete = true;
-    }
-    state[start] = 2;
-    return cycle_exists;
+  } else if (!loop_exists) {
+    cout << "NO"
+         << "\n";
   }
 
-  void PrintCycle() {
-    while (!cycle.empty()) {
-      cout << cycle.top() + 1 << ' ';
-      cycle.pop();
-    }
-    cout << '\n';
-  }
-};
-
-int main() {
-  int n = 0;
-  int m = 0;
-  cin >> n >> m;
-  Graph g(n);
-  for (int i = 0; i < m; ++i) {
-    int from = 0;
-    int to = 0;
-    cin >> from >> to;
-    g.AddEdge(from, to);
-  }
-  if (g.FindCycles()) {
-    cout << "YES" << '\n';
-    g.PrintCycle();
-  } else {
-    cout << "NO" << '\n';
-  }
+  delete[] proximity_list;
+  delete[] states;
+  return 0;
 }
