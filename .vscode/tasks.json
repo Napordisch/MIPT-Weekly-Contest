@@ -10,10 +10,10 @@
         "-g",
         "${file}",
         "-o",
-        "${fileDirname}/${fileBasenameNoExtension}"
+        "${workspaceFolder}/bin/${fileDirnameBasename}/${fileBasenameNoExtension}"
       ],
       "options": {
-        "cwd": "${fileDirname}"
+        "cwd": "${workspaceFolder}/bin/${fileDirnameBasename}"
       },
       "problemMatcher": [
         "$gcc"
